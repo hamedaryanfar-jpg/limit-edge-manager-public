@@ -2452,6 +2452,9 @@ ${email.snippet}
             document.getElementById('mainContent').style.display = 'none';
             document.getElementById('applicationDetails').style.display = 'block';
             
+            // Hide main header
+            document.querySelector('.header').style.display = 'none';
+            
             // Populate application details
             document.getElementById('appName').textContent = email.name || 'Unknown';
             document.getElementById('appGender').textContent = email.gender === 'male' ? 'Male' : email.gender === 'female' ? 'Female' : 'Unknown';
@@ -3145,6 +3148,9 @@ ${email.snippet}
         function goBackToApplications() {
             document.getElementById('applicationDetails').style.display = 'none';
             document.getElementById('mainContent').style.display = 'block';
+            
+            // Show main header
+            document.querySelector('.header').style.display = 'flex';
         }
 
         function markAsProcessed(emailId) {
