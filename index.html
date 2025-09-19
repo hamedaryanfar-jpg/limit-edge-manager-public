@@ -722,9 +722,7 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
-            position: fixed;
-            top: 20px;
-            right: 20px;
+            position: relative;
             z-index: 1000;
         }
 
@@ -739,7 +737,9 @@
             padding: 20px 40px;
             border-radius: 20px 20px 0 0;
             margin-bottom: 0;
-            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
         }
 
@@ -1613,10 +1613,18 @@
             .personal-info-header {
                 padding: 15px 20px;
                 border-radius: 15px 15px 0 0;
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
             }
             
             .personal-info-header h3 {
                 font-size: 20px;
+            }
+            
+            .back-to-applications-btn {
+                padding: 10px 16px;
+                font-size: 14px;
             }
             
             .header {
@@ -1827,11 +1835,11 @@
 
         <!-- Application Details View -->
         <div id="applicationDetails" class="application-details-view" style="display: none;">
-            <button class="back-to-applications-btn" onclick="goBackToApplications()">
-                ← Back to Applications
-            </button>
             <div class="personal-info-header">
                 <h3>📋 Personal Information</h3>
+                <button class="back-to-applications-btn" onclick="goBackToApplications()">
+                    ← Back to Applications
+                </button>
             </div>
             <div class="details-header">
                 <div class="details-header-left">
