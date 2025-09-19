@@ -1,33 +1,29 @@
-// config.example.js - API Configuration Example
-// Copy this file and rename it to config.js, then add your actual API keys
+# Limit Edge Manager Configuration
 
+## Gmail API Configuration
+
+Replace these values with your actual API credentials:
+
+```javascript
 const CONFIG = {
-    // Google OAuth Client ID
-    CLIENT_ID: 'YOUR_GOOGLE_CLIENT_ID_HERE',
-    
-    // Google API Key
-    API_KEY: 'YOUR_GOOGLE_API_KEY_HERE',
-    
-    // Gmail API Scopes
-    SCOPES: 'https://www.googleapis.com/auth/gmail.readonly',
-    
-    // Discovery Document URL
-    DISCOVERY_DOC: 'https://gmail.googleapis.com/$discovery/rest?version=v1',
-    
-    // App Configuration
-    APP_NAME: 'Limit Edge Email Manager',
-    APP_VERSION: '1.0.0',
-    
-    // Development/Production Environment
-    ENVIRONMENT: 'development', // 'development' or 'production'
-    
-    // Debug Mode
-    DEBUG: true
+    CLIENT_ID: 'your-client-id',
+    API_KEY: 'your-api-key',
+    DISCOVERY_DOC: 'https://www.googleapis.com/discovery/v1/apis/gmail/v1/rest',
+    SCOPES: 'https://www.googleapis.com/auth/gmail.readonly'
 };
+```
 
-// Export configuration
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = CONFIG;
-} else {
-    window.CONFIG = CONFIG;
-}
+## Setup Instructions
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com/)
+2. Create a new project or select existing one
+3. Enable Gmail API
+4. Create OAuth 2.0 credentials
+5. Add your domain to authorized origins
+6. Copy credentials to `config.js`
+
+## Security Notes
+
+- Never commit `config.js` to public repositories
+- Use environment variables in production
+- Regularly rotate API keys
