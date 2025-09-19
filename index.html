@@ -941,19 +941,58 @@
 
         /* Instagram Icon Styling */
         .instagram-icon {
+            width: 24px;
+            height: 24px;
+            display: inline-block;
             background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-size: 24px;
-            font-weight: bold;
+            border-radius: 6px;
+            position: relative;
+        }
+
+        .instagram-icon::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 16px;
+            height: 16px;
+            border: 2px solid white;
+            border-radius: 4px;
+        }
+
+        .instagram-icon::after {
+            content: '';
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
         }
 
         /* YouTube Icon Styling */
         .youtube-icon {
-            color: #ff0000;
-            font-size: 24px;
-            font-weight: bold;
+            width: 24px;
+            height: 24px;
+            display: inline-block;
+            background: #ff0000;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .youtube-icon::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 0;
+            height: 0;
+            border-left: 8px solid white;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
         }
 
         /* YouTube specific styling */
@@ -1780,11 +1819,11 @@
                     <h3>📱 Social Media</h3>
                     <div class="details-social-grid">
                         <div class="details-social-item">
-                            <span class="details-social-icon instagram-icon">📷</span>
+                            <div class="details-social-icon instagram-icon"></div>
                             <span class="details-social-value" id="appInstagram" onclick="openInstagramProfile(this.textContent)">Not provided</span>
                         </div>
                         <div class="details-social-item">
-                            <span class="details-social-icon youtube-icon">🎥</span>
+                            <div class="details-social-icon youtube-icon"></div>
                             <span class="details-social-value" id="appYoutube" onclick="openYouTubeProfile(this.textContent)">Not provided</span>
                         </div>
                     </div>
