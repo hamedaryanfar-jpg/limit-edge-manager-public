@@ -626,7 +626,7 @@
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             padding: 40px;
-            border-radius: 20px;
+            border-radius: 0 0 20px 20px;
             margin-bottom: 40px;
             display: flex;
             align-items: center;
@@ -731,6 +731,23 @@
         .back-to-applications-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .personal-info-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 40px;
+            border-radius: 20px 20px 0 0;
+            margin-bottom: 0;
+            text-align: left;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+        }
+
+        .personal-info-header h3 {
+            font-size: 24px;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .details-content {
@@ -1593,6 +1610,15 @@
                 font-size: 14px;
             }
             
+            .personal-info-header {
+                padding: 15px 20px;
+                border-radius: 15px 15px 0 0;
+            }
+            
+            .personal-info-header h3 {
+                font-size: 20px;
+            }
+            
             .header {
                 flex-direction: column;
                 gap: 15px;
@@ -1804,6 +1830,9 @@
             <button class="back-to-applications-btn" onclick="goBackToApplications()">
                 ← Back to Applications
             </button>
+            <div class="personal-info-header">
+                <h3>📋 Personal Information</h3>
+            </div>
             <div class="details-header">
                 <div class="details-header-left">
                     <div class="details-avatar" id="appAvatar">👤</div>
@@ -1820,7 +1849,6 @@
             <div class="details-content">
                 <!-- Personal Information Section (Below Header) -->
                 <div class="personal-info-section">
-                    <h3>📋 Personal Information</h3>
                     <div class="personal-info-grid">
                         <div class="personal-info-item">
                             <span class="personal-info-icon">📏</span>
