@@ -711,24 +711,23 @@
 
 
         .back-to-applications-btn {
-            background: rgba(255,255,255,0.15);
-            border: 2px solid rgba(255,255,255,0.3);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
             color: white;
-            padding: 16px 32px;
-            border-radius: 50px;
-            cursor: pointer;
+            padding: 12px 24px;
+            border-radius: 12px;
             font-size: 16px;
             font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
             transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            position: relative;
-            z-index: 1;
+            align-self: flex-start;
         }
 
         .back-to-applications-btn:hover {
-            background: rgba(255,255,255,0.25);
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
         }
 
         .details-content {
@@ -1792,6 +1791,10 @@
 
         <!-- Application Details View -->
         <div id="applicationDetails" class="application-details-view" style="display: none;">
+            <button class="back-to-applications-btn" onclick="goBackToApplications()">
+                ← Back to Applications
+            </button>
+            
             <div class="details-header">
                 <div class="details-header-left">
                     <div class="details-avatar" id="appAvatar">👤</div>
@@ -1803,9 +1806,6 @@
                         </div>
                     </div>
                 </div>
-                <button class="back-to-applications-btn" onclick="goBackToApplications()">
-                    ← Back to Applications
-                </button>
             </div>
             
             <div class="details-content">
