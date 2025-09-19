@@ -685,6 +685,39 @@
             font-weight: 500;
         }
 
+        .details-basic-info {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-top: 8px;
+        }
+
+        .details-gender {
+            font-size: 24px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 12px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .details-age {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+
+        .details-date {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 16px;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+
         .back-to-applications-btn {
             background: rgba(255,255,255,0.15);
             border: 2px solid rgba(255,255,255,0.3);
@@ -1388,6 +1421,17 @@
                 font-size: 16px;
             }
 
+            .details-basic-info {
+                flex-direction: column;
+                gap: 8px;
+                align-items: flex-start;
+            }
+
+            .details-gender, .details-age, .details-date {
+                font-size: 14px;
+                padding: 6px 12px;
+            }
+
             .instagram-posts-section {
                 padding: 24px 0;
             }
@@ -1758,12 +1802,14 @@
         <div id="applicationDetails" class="application-details-view" style="display: none;">
             <div class="details-header">
                 <div class="details-header-left">
-                    <div class="details-avatar" id="appAvatar">A</div>
+                    <div class="details-avatar" id="appAvatar">👤</div>
                     <div class="details-applicant-info">
                         <h1 id="appName">Applicant Name</h1>
-                        <p id="appGender">Gender</p>
-                        <p id="appAge">Age</p>
-                        <p id="appDate">Date</p>
+                        <div class="details-basic-info">
+                            <span class="details-gender" id="appGender">👤</span>
+                            <span class="details-age" id="appAge">Age</span>
+                            <span class="details-date" id="appDate">Date</span>
+                        </div>
                     </div>
                 </div>
                 <button class="back-to-applications-btn" onclick="goBackToApplications()">
@@ -2380,8 +2426,8 @@ ${email.snippet}
             
             // Populate application details
             document.getElementById('appName').textContent = email.name || 'Unknown';
-            document.getElementById('appGender').textContent = email.gender || 'Unknown';
-            document.getElementById('appAge').textContent = email.age || 'Unknown';
+            document.getElementById('appGender').textContent = email.gender === 'male' ? '👨' : email.gender === 'female' ? '👩' : '👤';
+            document.getElementById('appAge').textContent = email.age ? `${email.age} years old` : 'Unknown';
             document.getElementById('appHeight').textContent = email.height || 'Unknown';
             document.getElementById('appWeight').textContent = email.weight || 'Unknown';
             document.getElementById('appHometown').textContent = email.hometown || 'Unknown';
@@ -2391,8 +2437,8 @@ ${email.snippet}
             document.getElementById('appYoutube').textContent = email.youtube !== 'نامشخص' ? email.youtube : 'Not provided';
             document.getElementById('appDate').textContent = formatDate(email.date);
             
-            // Set avatar
-            document.getElementById('appAvatar').textContent = (email.name || 'A').charAt(0).toUpperCase();
+            // Set avatar with gender icon
+            document.getElementById('appAvatar').textContent = email.gender === 'male' ? '👨' : email.gender === 'female' ? '👩' : '👤';
             
             // Check if Instagram is provided and load posts
             // Instagram section removed - now opens in new tab when clicked
