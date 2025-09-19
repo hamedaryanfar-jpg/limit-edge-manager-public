@@ -1870,7 +1870,6 @@
             <!-- Controls -->
             <div id="controlsSection" class="controls hidden">
                 <div class="btn-group">
-                    <button id="fetchEmailsBtn" class="btn">📥 Fetch Emails</button>
                     <button id="refreshBtn" class="btn">🔄 Refresh</button>
                 </div>
                 <input type="text" id="searchBox" class="search-box" placeholder="Search emails...">
@@ -2076,6 +2075,9 @@
             document.getElementById('emailsContainer').classList.remove('hidden');
             document.getElementById('headerStats').classList.remove('hidden');
             document.getElementById('headerUserInfo').classList.remove('hidden');
+            
+            // Auto-fetch emails after login
+            fetchEmails();
         }
 
         function hideMainInterface() {
@@ -3336,7 +3338,6 @@ ${email.snippet}
         // Event Listeners
         document.getElementById('signInBtn').addEventListener('click', signIn);
         document.getElementById('signOutBtn').addEventListener('click', signOut);
-        document.getElementById('fetchEmailsBtn').addEventListener('click', fetchEmails);
         document.getElementById('refreshBtn').addEventListener('click', fetchEmails);
         document.getElementById('searchBox').addEventListener('input', searchEmails);
 
