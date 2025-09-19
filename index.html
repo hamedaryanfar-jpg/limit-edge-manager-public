@@ -123,8 +123,50 @@
         }
 
         .auth-section {
-            text-align: center;
-            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 70vh;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 20px;
+            margin: 20px;
+            padding: 60px 40px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .auth-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .auth-section h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-section p {
+            font-size: 1.2rem;
+            color: #6c757d;
+            margin-bottom: 40px;
+            max-width: 400px;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
         }
 
         .btn {
@@ -137,6 +179,30 @@
             cursor: pointer;
             transition: all 0.3s ease;
             margin: 10px;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        #signInBtn {
+            background: linear-gradient(135deg, #4285f4 0%, #34a853 100%);
+            padding: 18px 40px;
+            font-size: 1.2rem;
+            box-shadow: 0 10px 30px rgba(66, 133, 244, 0.4);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+        }
+
+        #signInBtn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(66, 133, 244, 0.5);
+            background: linear-gradient(135deg, #3367d6 0%, #2d8f47 100%);
+        }
+
+        #signInBtn:active {
+            transform: translateY(-1px);
         }
 
         .btn:hover {
@@ -1296,6 +1362,29 @@
 
 
         @media (max-width: 768px) {
+            .auth-section {
+                min-height: 60vh;
+                margin: 10px;
+                padding: 40px 20px;
+                border-radius: 15px;
+            }
+            
+            .auth-section h2 {
+                font-size: 2rem;
+                margin-bottom: 15px;
+            }
+            
+            .auth-section p {
+                font-size: 1rem;
+                margin-bottom: 30px;
+                max-width: 300px;
+            }
+            
+            #signInBtn {
+                padding: 15px 30px;
+                font-size: 1.1rem;
+            }
+            
             .applications-grid {
                 grid-template-columns: 1fr;
                 padding: 0;
@@ -1802,9 +1891,9 @@
         <div class="main-content">
             <!-- Authentication Section -->
             <div id="authSection" class="auth-section">
-                <h2>🔐 Sign in with Google</h2>
-                <p>Please sign in to access your emails</p>
-                <button id="signInBtn" class="btn">Sign in with Google</button>
+                <h2>🔐 Welcome to Limit Edge</h2>
+                <p>Sign in with your Google account to manage application emails and view applicant details</p>
+                <button id="signInBtn" class="btn">🚀 Sign in with Google</button>
             </div>
 
 
