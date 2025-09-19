@@ -26,21 +26,9 @@ git clone https://github.com/yourusername/limit-edge-manager.git
 cd limit-edge-manager
 ```
 
-### 2. Configure API Keys
+### 2. Ready to Use
 
-1. Copy the example configuration file:
-```bash
-cp config.example.js config.js
-```
-
-2. Edit `config.js` and add your API credentials:
-```javascript
-const CONFIG = {
-    CLIENT_ID: 'your-google-client-id',
-    API_KEY: 'your-google-api-key',
-    // ... other settings
-};
-```
+The application comes with pre-configured API keys and is ready to use immediately. No additional setup required!
 
 ### 3. Google Cloud Console Setup
 

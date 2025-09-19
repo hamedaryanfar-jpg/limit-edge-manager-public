@@ -1,5 +1,4 @@
-# API Keys and Sensitive Data
-config.js
+# Environment files
 .env
 *.env
 .env.local

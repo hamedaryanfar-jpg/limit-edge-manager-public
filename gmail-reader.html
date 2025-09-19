@@ -1667,12 +1667,14 @@
     <!-- Google API Scripts -->
     <script src="https://apis.google.com/js/api.js"></script>
     <script src="https://accounts.google.com/gsi/client"></script>
+    <script src="config.js"></script>
 
     <script>
-        // Configuration
-        const CLIENT_ID = '359299328467-bjr6m5ktbjcosvce5dos2nu8embse4i6.apps.googleusercontent.com';
-        const DISCOVERY_DOC = 'https://gmail.googleapis.com/$discovery/rest?version=v1';
-        const SCOPES = 'https://www.googleapis.com/auth/gmail.readonly';
+        // Configuration from config.js
+        const CLIENT_ID = CONFIG.CLIENT_ID;
+        const API_KEY = CONFIG.API_KEY;
+        const DISCOVERY_DOC = CONFIG.DISCOVERY_DOC;
+        const SCOPES = CONFIG.SCOPES;
 
         // Global variables
         let gapiLoaded = false;
