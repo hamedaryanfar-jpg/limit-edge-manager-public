@@ -939,6 +939,23 @@
             transform: scale(1.05);
         }
 
+        /* Instagram Icon Styling */
+        .instagram-icon {
+            background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* YouTube Icon Styling */
+        .youtube-icon {
+            color: #ff0000;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
         /* YouTube specific styling */
         #appYoutube[onclick] {
             color: #ff0000;
@@ -1763,13 +1780,11 @@
                     <h3>📱 Social Media</h3>
                     <div class="details-social-grid">
                         <div class="details-social-item">
-                            <span class="details-social-icon">📱</span>
-                            <span class="details-social-label">📷</span>
+                            <span class="details-social-icon instagram-icon">📷</span>
                             <span class="details-social-value" id="appInstagram" onclick="openInstagramProfile(this.textContent)">Not provided</span>
                         </div>
                         <div class="details-social-item">
-                            <span class="details-social-icon">🎥</span>
-                            <span class="details-social-label">🎬</span>
+                            <span class="details-social-icon youtube-icon">🎥</span>
                             <span class="details-social-value" id="appYoutube" onclick="openYouTubeProfile(this.textContent)">Not provided</span>
                         </div>
                     </div>
