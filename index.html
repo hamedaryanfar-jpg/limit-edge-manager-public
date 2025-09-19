@@ -1823,20 +1823,6 @@
                     <h3>📋 Personal Information</h3>
                     <div class="personal-info-grid">
                         <div class="personal-info-item">
-                            <span class="personal-info-icon">👤</span>
-                            <div class="personal-info-content">
-                                <span class="personal-info-label">Gender</span>
-                                <span class="personal-info-value" id="appGenderDetail">Gender</span>
-                            </div>
-                        </div>
-                        <div class="personal-info-item">
-                            <span class="personal-info-icon">🎂</span>
-                            <div class="personal-info-content">
-                                <span class="personal-info-label">Age</span>
-                                <span class="personal-info-value" id="appAgeDetail">Age</span>
-                            </div>
-                        </div>
-                        <div class="personal-info-item">
                             <span class="personal-info-icon">📏</span>
                             <div class="personal-info-content">
                                 <span class="personal-info-label">Height</span>
@@ -2453,10 +2439,6 @@ ${email.snippet}
             
             // Set avatar with gender icon
             document.getElementById('appAvatar').textContent = email.gender === 'male' ? '👨' : email.gender === 'female' ? '👩' : '👤';
-            
-            // Populate detailed personal info
-            document.getElementById('appGenderDetail').textContent = email.gender === 'male' ? 'Male' : email.gender === 'female' ? 'Female' : 'Unknown';
-            document.getElementById('appAgeDetail').textContent = email.age ? `${email.age} years old` : 'Unknown';
             
             // Check if Instagram is provided and load posts
             // Instagram section removed - now opens in new tab when clicked
