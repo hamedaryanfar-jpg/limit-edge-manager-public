@@ -1,0 +1,3309 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Limit Edge - مدیریت ایمیل‌ها</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            max-width: none;
+            width: 100%;
+            margin: 0;
+            background: white;
+            border-radius: 0;
+            box-shadow: none;
+            overflow: hidden;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            flex: 1;
+        }
+
+        .header-center {
+            text-align: center;
+            flex: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex: 1;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        .header-stats {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            display: inline-block;
+        }
+
+        .header-stats span:first-child {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        .header-stats span:last-child {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .header-user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-status {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .header-signout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 6px 12px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .header-signout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .main-content {
+            padding: 30px;
+        }
+
+        .auth-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+
+
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 150px;
+            max-width: 300px;
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-box:focus {
+            border-color: #667eea;
+        }
+
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .filter-btn {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #e0e0e0;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .emails-container {
+            border: 2px solid #e0e0e0;
+            border-radius: 15px;
+            background: white;
+        }
+
+        .emails-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .emails-table th {
+            background: #f8f9fa;
+            padding: 15px 10px;
+            text-align: right;
+            font-weight: bold;
+            color: #333;
+            border-bottom: 2px solid #e0e0e0;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .emails-table td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: top;
+        }
+
+        .emails-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .emails-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .name-cell {
+            font-weight: bold;
+            color: #333;
+            min-width: 120px;
+        }
+
+        .age-cell {
+            text-align: center;
+            color: #667eea;
+            font-weight: 500;
+            min-width: 60px;
+        }
+
+        .gender-cell {
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .gender-male {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .gender-female {
+            background: #fce4ec;
+            color: #c2185b;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .height-cell {
+            text-align: center;
+            color: #666;
+            min-width: 80px;
+        }
+
+        .weight-cell {
+            text-align: center;
+            color: #666;
+            min-width: 80px;
+        }
+
+        .hometown-cell {
+            color: #666;
+            min-width: 100px;
+        }
+
+        .athletic-cell {
+            color: #666;
+            min-width: 120px;
+        }
+
+        .motivation-cell {
+            color: #666;
+            min-width: 120px;
+        }
+
+        .social-cell {
+            color: #666;
+            min-width: 100px;
+        }
+
+        .instagram-cell {
+            color: #667eea;
+            min-width: 100px;
+        }
+
+        .youtube-cell {
+            color: #c62828;
+            min-width: 100px;
+        }
+
+        .date-cell {
+            color: #999;
+            font-size: 0.8rem;
+            min-width: 120px;
+        }
+
+        .status-cell {
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .status-new {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .status-processed {
+            background: #fff3e0;
+            color: #f57c00;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .status-error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .action-cell {
+            text-align: center;
+            min-width: 100px;
+        }
+
+        .action-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin: 2px;
+        }
+
+        .action-btn:hover {
+            background: #5a6fd8;
+        }
+
+        .email-item {
+            padding: 30px;
+            border-bottom: 2px solid #e0e0e0;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+            margin-bottom: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .email-item:hover {
+            background-color: #f8f9fa;
+        }
+
+        .email-item:last-child {
+            border-bottom: none;
+        }
+
+        .email-content {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            border: 1px solid #e9ecef;
+        }
+
+        .email-content pre {
+            margin: 0;
+            white-space: pre-wrap;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+            padding: 15px;
+            background: white;
+            border-radius: 4px;
+            border: 1px solid #dee2e6;
+        }
+
+        .email-item p {
+            font-size: 1.1rem;
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .email-item strong {
+            font-weight: 600;
+            color: #333;
+        }
+
+        /* Professional Card-based Design */
+        .applications-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 24px;
+            padding: 32px 0;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .application-card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.06);
+            position: relative;
+        }
+
+        .application-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+        }
+
+        .application-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+            border-color: rgba(102, 126, 234, 0.2);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            padding: 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            position: relative;
+        }
+
+        .card-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(255,255,255,0.2);
+        }
+
+
+        .applicant-info {
+            flex: 1;
+        }
+
+        .applicant-name {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .applicant-gender-age {
+            margin: 6px 0 0 0;
+            font-size: 14px;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .card-status {
+            margin-left: 16px;
+        }
+
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 24px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .status-badge.new {
+            background: rgba(40, 167, 69, 0.9);
+            color: white;
+            border-color: rgba(40, 167, 69, 0.3);
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        .info-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .info-item {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .info-item:hover {
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+            transform: translateY(-1px);
+        }
+
+        .info-item.full-width {
+            flex: 1;
+        }
+
+        .info-icon {
+            font-size: 18px;
+            filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #6c757d;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-value {
+            font-size: 15px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-left: auto;
+        }
+
+        .athletic-preview {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 18px;
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-radius: 12px;
+            margin-top: 12px;
+            border: 1px solid rgba(33, 150, 243, 0.1);
+        }
+
+        .preview-text {
+            font-size: 14px;
+            color: #1565c0;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        .card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 24px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-top: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 8px;
+        }
+
+        .social-link {
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .social-link:hover {
+            transform: translateY(-1px);
+        }
+
+        .social-link.instagram {
+            background: linear-gradient(135deg, #e1306c 0%, #fd1d1d 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(225, 48, 108, 0.3);
+        }
+
+        .social-link.youtube {
+            background: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(255, 0, 0, 0.3);
+        }
+
+        .card-date {
+            font-size: 12px;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        /* Professional Application Details View */
+        .application-details-view {
+            padding: 32px;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+        }
+
+        .details-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .details-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            opacity: 0.3;
+        }
+
+        .details-header-left {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .details-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+            font-weight: 700;
+            border: 3px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .details-applicant-info h1 {
+            font-size: 36px;
+            margin-bottom: 8px;
+            font-weight: 800;
+            letter-spacing: -1px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .details-applicant-info p {
+            font-size: 18px;
+            opacity: 0.9;
+            margin: 4px 0;
+            font-weight: 500;
+        }
+
+        .back-to-applications-btn {
+            background: rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
+        }
+
+        .back-to-applications-btn:hover {
+            background: rgba(255,255,255,0.25);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .details-content {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+
+        /* Personal Information Section (Below Header) */
+        .personal-info-section {
+            padding: 40px 48px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-bottom: 1px solid rgba(0,0,0,0.06);
+        }
+
+        .personal-info-section h3 {
+            font-size: 28px;
+            color: #2c3e50;
+            margin-bottom: 32px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            text-align: center;
+            justify-content: center;
+        }
+
+        .personal-info-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .personal-info-item {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .personal-info-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+
+        .personal-info-icon {
+            font-size: 32px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .personal-info-content {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex: 1;
+        }
+
+        .personal-info-label {
+            font-weight: 700;
+            color: #6c757d;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .personal-info-value {
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 18px;
+        }
+
+        /* Two Column Section */
+        .two-column-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 32px;
+            padding: 48px;
+        }
+
+        .details-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 32px;
+            padding: 48px;
+        }
+
+        .details-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 32px;
+            border-radius: 16px;
+            border-left: 6px solid #667eea;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .details-section:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.1);
+        }
+
+        .details-section h3 {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .details-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .details-info-item {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .details-info-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .details-info-item.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .details-label {
+            font-weight: 700;
+            color: #6c757d;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .details-value {
+            font-weight: 700;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+
+        .details-text-content {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            line-height: 1.7;
+            color: #2c3e50;
+            font-size: 16px;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .details-social-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .details-social-item {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .details-social-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .details-social-icon {
+            font-size: 28px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .details-social-label {
+            font-weight: 700;
+            color: #6c757d;
+            min-width: 120px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .details-social-value {
+            color: #2c3e50;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .details-social-value[onclick] {
+            cursor: pointer;
+            color: #e1306c;
+            text-decoration: underline;
+            transition: all 0.3s ease;
+        }
+
+        .details-social-value[onclick]:hover {
+            color: #fd1d1d;
+            transform: scale(1.05);
+        }
+
+        /* YouTube specific styling */
+        #appYoutube[onclick] {
+            color: #ff0000;
+        }
+
+        #appYoutube[onclick]:hover {
+            color: #cc0000;
+        }
+
+        /* Instagram Posts Section */
+        .instagram-posts-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            padding: 32px;
+            border-radius: 16px;
+            border-left: 6px solid #e1306c;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            margin-top: 32px;
+        }
+
+        .instagram-posts-section h3 {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .instagram-profile-info {
+            background: white;
+            padding: 24px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .instagram-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #e1306c 0%, #fd1d1d 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .instagram-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .instagram-profile-details {
+            flex: 1;
+        }
+
+        .instagram-profile-details h4 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 0 0 8px 0;
+        }
+
+        .instagram-profile-details p {
+            font-size: 14px;
+            color: #6c757d;
+            margin: 0 0 12px 0;
+            line-height: 1.4;
+        }
+
+        .instagram-stats {
+            display: flex;
+            gap: 16px;
+        }
+
+        .instagram-stats span {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .instagram-posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .instagram-post {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .instagram-post:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        .instagram-post-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #f8f9fa;
+        }
+
+        .instagram-post-info {
+            padding: 12px;
+        }
+
+        .instagram-post-caption {
+            font-size: 12px;
+            color: #2c3e50;
+            line-height: 1.4;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .instagram-post-stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: #6c757d;
+            font-weight: 600;
+        }
+
+        .instagram-loading {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #e1306c;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .instagram-loading p {
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .instagram-no-posts {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .instagram-no-posts p {
+            margin: 8px 0;
+            color: #6c757d;
+            font-weight: 500;
+        }
+
+        .instagram-no-posts a {
+            color: #e1306c;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .instagram-no-posts a:hover {
+            text-decoration: underline;
+        }
+
+        .instagram-link-container {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .instagram-link-card {
+            background: linear-gradient(135deg, #e1306c, #fd1d1d);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(225, 48, 108, 0.3);
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .instagram-link-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .instagram-link-content h4 {
+            color: white;
+            margin: 0 0 15px 0;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .instagram-link-content p {
+            color: rgba(255, 255, 255, 0.9);
+            margin: 0 0 25px 0;
+            line-height: 1.6;
+            font-size: 16px;
+        }
+
+        .instagram-visit-btn {
+            display: inline-block;
+            background: white;
+            color: #e1306c;
+            padding: 15px 30px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .instagram-visit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            background: #f8f9fa;
+        }
+
+
+        @media (max-width: 768px) {
+            .applications-grid {
+                grid-template-columns: 1fr;
+                padding: 20px 16px;
+                gap: 20px;
+            }
+
+            .application-card {
+                margin: 0 8px;
+            }
+
+            .card-header {
+                padding: 20px;
+            }
+
+
+            .applicant-name {
+                font-size: 18px;
+            }
+
+            .card-body {
+                padding: 20px;
+            }
+
+            .info-row {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .details-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 24px;
+                padding: 32px 24px;
+            }
+
+            .personal-info-section {
+                padding: 32px 24px;
+            }
+
+            .personal-info-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+
+            .personal-info-item {
+                padding: 20px;
+            }
+
+            .personal-info-section h3 {
+                font-size: 24px;
+                margin-bottom: 24px;
+            }
+            
+            .two-column-section {
+                grid-template-columns: 1fr;
+                padding: 24px 20px;
+                gap: 24px;
+            }
+            
+            .details-sections {
+                grid-template-columns: 1fr;
+                padding: 24px 20px;
+                gap: 24px;
+            }
+            
+            .details-info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .details-section {
+                padding: 24px 20px;
+            }
+
+            .details-section h3 {
+                font-size: 20px;
+            }
+
+            .details-avatar {
+                width: 80px;
+                height: 80px;
+                font-size: 32px;
+            }
+
+            .details-applicant-info h1 {
+                font-size: 28px;
+            }
+
+            .details-applicant-info p {
+                font-size: 16px;
+            }
+
+            .instagram-posts-section {
+                padding: 24px 20px;
+            }
+
+            .instagram-profile-info {
+                flex-direction: column;
+                text-align: center;
+                gap: 16px;
+            }
+
+            .instagram-avatar {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+            }
+
+            .instagram-posts-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 12px;
+            }
+
+            .instagram-post-image {
+                height: 150px;
+            }
+        }
+
+        .emails-table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .emails-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .emails-table th {
+            background: #f8f9fa;
+            padding: 15px 8px;
+            text-align: left;
+            font-weight: bold;
+            color: #333;
+            border-bottom: 2px solid #e0e0e0;
+            position: sticky;
+            top: 0;
+            white-space: nowrap;
+        }
+
+        .emails-table td {
+            padding: 12px 8px;
+            border-bottom: 1px solid #f0f0f0;
+            vertical-align: top;
+            max-width: 200px;
+            word-wrap: break-word;
+        }
+
+        .emails-table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .subject-cell {
+            font-weight: 600;
+            color: #2c3e50;
+            min-width: 150px;
+        }
+
+        .name-cell {
+            font-weight: 600;
+            color: #27ae60;
+            min-width: 120px;
+        }
+
+        .age-cell, .gender-cell, .height-cell, .weight-cell {
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .hometown-cell, .athletic-cell, .motivation-cell {
+            min-width: 150px;
+            max-width: 200px;
+        }
+
+        .instagram-cell, .youtube-cell {
+            min-width: 100px;
+            font-size: 12px;
+        }
+
+        .date-cell, .from-cell {
+            font-size: 12px;
+            color: #666;
+            min-width: 100px;
+        }
+
+        .email-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .email-subject {
+            font-weight: bold;
+            color: #333;
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+
+        .email-date {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .email-from {
+            color: #667eea;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+
+        .email-snippet {
+            color: #666;
+            line-height: 1.5;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .success {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                padding: 15px 20px;
+            }
+            
+            .header-left {
+                justify-content: center;
+            }
+            
+            .header-center {
+                text-align: center;
+                flex: 1;
+                align-items: center;
+            }
+            
+            .header-right {
+                justify-content: center;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .header-user-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .header-signout-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .btn-group {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .search-box {
+                min-width: auto;
+                max-width: none;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <div id="headerStats" class="header-stats hidden">
+                    <span id="headerTotalCount">0</span>
+                    <span>درخواست</span>
+                </div>
+            </div>
+            <div class="header-center">
+                <h1>📧 Limit Edge</h1>
+                <p>مدیریت ایمیل‌های درخواست ثبت‌نام</p>
+            </div>
+            <div class="header-right">
+                <div id="headerUserInfo" class="header-user-info hidden">
+                    <span class="user-status">👤 کاربر وارد شده</span>
+                    <button id="signOutBtn" class="header-signout-btn">خروج</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Authentication Section -->
+            <div id="authSection" class="auth-section">
+                <h2>🔐 ورود با Google</h2>
+                <p>برای دسترسی به ایمیل‌هایتان ابتدا وارد شوید</p>
+                <button id="signInBtn" class="btn">ورود با Google</button>
+            </div>
+
+
+        <!-- Main Content -->
+        <div id="mainContent">
+            <!-- Controls -->
+            <div id="controlsSection" class="controls hidden">
+                <div class="btn-group">
+                    <button id="fetchEmailsBtn" class="btn">📥 دریافت ایمیل‌ها</button>
+                    <button id="refreshBtn" class="btn">🔄 بروزرسانی</button>
+                </div>
+                <input type="text" id="searchBox" class="search-box" placeholder="جستجو در ایمیل‌ها...">
+            </div>
+
+            <!-- Filter Buttons -->
+            <div id="filterSection" class="filter-buttons hidden">
+                <button class="filter-btn active" data-filter="all">همه</button>
+                <button class="filter-btn" data-filter="male">مرد</button>
+                <button class="filter-btn" data-filter="female">زن</button>
+                <button class="filter-btn" data-filter="age-18-25">18-25 سال</button>
+                <button class="filter-btn" data-filter="age-26-35">26-35 سال</button>
+                <button class="filter-btn" data-filter="age-36+">36+ سال</button>
+            </div>
+
+            <!-- Messages -->
+            <div id="messageContainer"></div>
+
+            <!-- Emails Container -->
+            <div id="emailsContainer" class="emails-container hidden">
+                <div class="loading">
+                    <p>در حال بارگذاری...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Application Details View -->
+        <div id="applicationDetails" class="application-details-view" style="display: none;">
+            <div class="details-header">
+                <div class="details-header-left">
+                    <div class="details-avatar" id="appAvatar">A</div>
+                    <div class="details-applicant-info">
+                        <h1 id="appName">Applicant Name</h1>
+                        <p id="appGender">Gender</p>
+                        <p id="appAge">Age</p>
+                        <p id="appDate">Date</p>
+                    </div>
+                </div>
+                <button class="back-to-applications-btn" onclick="goBackToApplications()">
+                    ← Back to Applications
+                </button>
+            </div>
+            
+            <div class="details-content">
+                <!-- Personal Information Section (Below Header) -->
+                <div class="personal-info-section">
+                    <h3>📋 Personal Information</h3>
+                    <div class="personal-info-grid">
+                        <div class="personal-info-item">
+                            <span class="personal-info-icon">📏</span>
+                            <div class="personal-info-content">
+                                <span class="personal-info-label">Height</span>
+                                <span class="personal-info-value" id="appHeight">Height</span>
+                            </div>
+                        </div>
+                        <div class="personal-info-item">
+                            <span class="personal-info-icon">⚖️</span>
+                            <div class="personal-info-content">
+                                <span class="personal-info-label">Weight</span>
+                                <span class="personal-info-value" id="appWeight">Weight</span>
+                            </div>
+                        </div>
+                        <div class="personal-info-item">
+                            <span class="personal-info-icon">🏠</span>
+                            <div class="personal-info-content">
+                                <span class="personal-info-label">Hometown</span>
+                                <span class="personal-info-value" id="appHometown">Hometown</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Two Column Section -->
+                <div class="two-column-section">
+                    <div class="details-section">
+                        <h3>🏃 Athletic Background</h3>
+                        <div class="details-text-content" id="appAthletic">
+                            Athletic background information
+                        </div>
+                    </div>
+
+                    <div class="details-section">
+                        <h3>💪 Motivation</h3>
+                        <div class="details-text-content" id="appMotivation">
+                            Motivation information
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Social Media Section -->
+                <div class="details-section">
+                    <h3>📱 Social Media</h3>
+                    <div class="details-social-grid">
+                        <div class="details-social-item">
+                            <span class="details-social-icon">📱</span>
+                            <span class="details-social-label">Instagram:</span>
+                            <span class="details-social-value" id="appInstagram" onclick="openInstagramProfile(this.textContent)">Not provided</span>
+                        </div>
+                        <div class="details-social-item">
+                            <span class="details-social-icon">🎥</span>
+                            <span class="details-social-label">YouTube:</span>
+                            <span class="details-social-value" id="appYoutube" onclick="openYouTubeProfile(this.textContent)">Not provided</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Google API Scripts -->
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client"></script>
+
+    <script>
+        // Configuration
+        const CLIENT_ID = '359299328467-bjr6m5ktbjcosvce5dos2nu8embse4i6.apps.googleusercontent.com';
+        const DISCOVERY_DOC = 'https://gmail.googleapis.com/$discovery/rest?version=v1';
+        const SCOPES = 'https://www.googleapis.com/auth/gmail.readonly';
+
+        // Global variables
+        let gapiLoaded = false;
+        let gisLoaded = false;
+        let tokenClient = null;
+        let accessToken = null;
+        let emails = [];
+        let filteredEmails = [];
+
+        // Initialize Google APIs
+        function initializeGapi() {
+            gapi.load('client', async () => {
+                await gapi.client.init({
+                    discoveryDocs: [DISCOVERY_DOC],
+                });
+                gapiLoaded = true;
+                console.log('✅ Gmail API loaded');
+            });
+        }
+
+        function initializeGis() {
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: CLIENT_ID,
+                scope: SCOPES,
+                callback: (response) => {
+                    accessToken = response.access_token;
+                    console.log('✅ Access token received');
+                    showUserInfo();
+                    showMainInterface();
+                },
+            });
+            gisLoaded = true;
+            console.log('✅ Google Identity Services loaded');
+        }
+
+        // Authentication
+        function signIn() {
+            if (!gisLoaded) {
+                showError('Google Identity Services هنوز بارگذاری نشده');
+                return;
+            }
+            
+            tokenClient.requestAccessToken();
+        }
+
+        function signOut() {
+            accessToken = null;
+            emails = [];
+            filteredEmails = [];
+            
+            hideMainInterface();
+            showAuthSection();
+            clearEmailsContainer();
+            
+            console.log('✅ Signed out');
+        }
+
+        // UI Functions
+        function showAuthSection() {
+            document.getElementById('authSection').classList.remove('hidden');
+            document.getElementById('userInfo').classList.add('hidden');
+        }
+
+        function hideAuthSection() {
+            document.getElementById('authSection').classList.add('hidden');
+        }
+
+        function showUserInfo() {
+            document.getElementById('headerUserInfo').classList.remove('hidden');
+        }
+
+        function showMainInterface() {
+            hideAuthSection();
+            document.getElementById('controlsSection').classList.remove('hidden');
+            document.getElementById('filterSection').classList.remove('hidden');
+            document.getElementById('emailsContainer').classList.remove('hidden');
+            document.getElementById('headerStats').classList.remove('hidden');
+            document.getElementById('headerUserInfo').classList.remove('hidden');
+        }
+
+        function hideMainInterface() {
+            document.getElementById('controlsSection').classList.add('hidden');
+            document.getElementById('filterSection').classList.add('hidden');
+            document.getElementById('emailsContainer').classList.add('hidden');
+            document.getElementById('headerStats').classList.add('hidden');
+            document.getElementById('headerUserInfo').classList.add('hidden');
+        }
+
+        // Email Functions
+        async function fetchEmails() {
+            if (!accessToken) {
+                showError('ابتدا با Google وارد شوید');
+                return;
+            }
+
+            showLoading();
+            
+            try {
+                console.log('🔍 شروع دریافت ایمیل‌ها...');
+                
+                // Search for emails with "Application:" in subject
+                const query = 'subject:"Application:" -subject:"New application received" -subject:"EmailJS" -from:"noreply@emailjs.com"';
+                console.log('🔍 جستجو با query:', query);
+                
+                const response = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${encodeURIComponent(query)}&maxResults=50`, {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log('📡 پاسخ Gmail API:', response.status);
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('❌ خطای Gmail API:', errorData);
+                    throw new Error(`HTTP ${response.status}: ${errorData.error?.message || 'خطای نامشخص'}`);
+                }
+
+                const data = await response.json();
+                console.log('📧 داده‌های دریافت شده:', data);
+
+                if (!data.messages || data.messages.length === 0) {
+                    showMessage('هیچ ایمیلی یافت نشد', 'info');
+                    clearEmailsContainer();
+                    return;
+                }
+
+                // Fetch detailed email data
+                emails = [];
+                for (const message of data.messages) {
+                    try {
+                        const emailDetail = await fetchEmailDetail(message.id);
+                        if (emailDetail) {
+                            emails.push(emailDetail);
+                        }
+                    } catch (error) {
+                        console.error('خطا در دریافت جزئیات ایمیل:', error);
+                    }
+                }
+
+                // Filter for emails with "Application:" in subject
+                const applicationEmails = emails.filter(email => 
+                    email.subject.includes('Application:') &&
+                    !email.subject.includes('New application received') &&
+                    !email.subject.includes('EmailJS') &&
+                    !email.from.includes('noreply@emailjs.com')
+                );
+                
+                console.log(`✅ ${emails.length} ایمیل دریافت شد، ${applicationEmails.length} ایمیل با Application:`);
+                
+                emails = applicationEmails; // Update emails array
+                filteredEmails = [...emails];
+                displayEmails();
+                updateEmailCount();
+                showMessage(`${emails.length} ایمیل با Application: با موفقیت دریافت شد`, 'success');
+
+            } catch (error) {
+                console.error('❌ خطا در دریافت ایمیل‌ها:', error);
+                showError(`خطا در دریافت ایمیل‌ها: ${error.message}`);
+            }
+        }
+
+        async function fetchEmailDetail(messageId) {
+            try {
+                const response = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${messageId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${accessToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const data = await response.json();
+                
+                // Extract email details
+                const headers = data.payload.headers;
+                const subject = headers.find(h => h.name === 'Subject')?.value || 'بدون موضوع';
+                const from = headers.find(h => h.name === 'From')?.value || 'نامشخص';
+                const date = headers.find(h => h.name === 'Date')?.value || new Date().toISOString();
+                
+                // Get full email body with proper encoding
+                let fullBody = '';
+                if (data.payload.body && data.payload.body.data) {
+                    try {
+                        // Decode base64 and handle encoding properly
+                        const base64Data = data.payload.body.data.replace(/-/g, '+').replace(/_/g, '/');
+                        const decoded = atob(base64Data);
+                        
+                        // Try to decode as UTF-8
+                        try {
+                            fullBody = decodeURIComponent(escape(decoded));
+                        } catch (e) {
+                            fullBody = decoded;
+                        }
+                        
+                        console.log('🔍 Decoded email body:', fullBody);
+                    } catch (e) {
+                        console.error('Error decoding email body:', e);
+                        fullBody = data.snippet || 'بدون متن';
+                    }
+                } else if (data.payload.parts) {
+                    // Handle multipart emails
+                    for (const part of data.payload.parts) {
+                        if (part.mimeType === 'text/plain' && part.body && part.body.data) {
+                            try {
+                                const base64Data = part.body.data.replace(/-/g, '+').replace(/_/g, '/');
+                                const decoded = atob(base64Data);
+                                
+                                // Try to decode as UTF-8
+                                try {
+                                    fullBody = decodeURIComponent(escape(decoded));
+                                } catch (e) {
+                                    fullBody = decoded;
+                                }
+                                
+                                console.log('🔍 Decoded email part:', fullBody);
+                                break;
+                            } catch (e) {
+                                console.error('Error decoding email part:', e);
+                                continue;
+                            }
+                        }
+                    }
+                }
+                
+                // Use full body if available, otherwise fallback to snippet
+                const emailContent = detectAndFixEncoding(fullBody || data.snippet || 'بدون متن');
+                
+                // Parse application data from subject and full content
+                const applicationData = parseApplicationData(subject, emailContent);
+                
+                return {
+                    id: messageId,
+                    subject: subject,
+                    from: from,
+                    date: new Date(date),
+                    snippet: emailContent,
+                    status: 'new',
+                    ...applicationData
+                };
+            } catch (error) {
+                console.error('خطا در دریافت جزئیات ایمیل:', error);
+                return null;
+            }
+        }
+
+        // Function to detect language and fix encoding
+        function detectAndFixEncoding(text) {
+            if (!text) return text;
+            
+            console.log('🔍 Original text:', text);
+            
+            let result = text;
+            
+            // Try multiple encoding fixes
+            try {
+                // Method 1: Try to fix UTF-8 encoding issues
+                result = result.replace(/Ã¶/g, 'ö');
+                result = result.replace(/Ã¤/g, 'ä');
+                result = result.replace(/Ã¥/g, 'å');
+                result = result.replace(/Ã…/g, 'Å');
+                result = result.replace(/Ã„/g, 'Ä');
+                result = result.replace(/Ã–/g, 'Ö');
+                
+                // Method 2: Fix Persian/Arabic encoding
+                result = result.replace(/Ø§/g, 'ا');
+                result = result.replace(/Ø¨/g, 'ب');
+                result = result.replace(/Øª/g, 'ت');
+                result = result.replace(/Ø«/g, 'ث');
+                result = result.replace(/Ø¬/g, 'ج');
+                result = result.replace(/Ø­/g, 'ح');
+                result = result.replace(/Ø®/g, 'خ');
+                result = result.replace(/Ø¯/g, 'د');
+                result = result.replace(/Ø°/g, 'ذ');
+                result = result.replace(/Ø±/g, 'ر');
+                result = result.replace(/Ø²/g, 'ز');
+                result = result.replace(/Ø³/g, 'س');
+                result = result.replace(/Ø´/g, 'ش');
+                result = result.replace(/Øµ/g, 'ص');
+                result = result.replace(/Ø¶/g, 'ض');
+                result = result.replace(/Ø·/g, 'ط');
+                result = result.replace(/Ø¸/g, 'ظ');
+                result = result.replace(/Ø¹/g, 'ع');
+                result = result.replace(/Øº/g, 'غ');
+                result = result.replace(/Ù/g, 'ف');
+                result = result.replace(/Ù‚/g, 'ق');
+                result = result.replace(/Ùƒ/g, 'ک');
+                result = result.replace(/Ù„/g, 'ل');
+                result = result.replace(/Ù…/g, 'م');
+                result = result.replace(/Ù†/g, 'ن');
+                result = result.replace(/Ù‡/g, 'ه');
+                result = result.replace(/Ùˆ/g, 'و');
+                result = result.replace(/ÙŠ/g, 'ی');
+                result = result.replace(/Ù¾/g, 'پ');
+                result = result.replace(/Ú†/g, 'چ');
+                result = result.replace(/Ú˜/g, 'ژ');
+                result = result.replace(/Ú¯/g, 'گ');
+                result = result.replace(/Û/g, 'ی');
+                result = result.replace(/ÙÙ/g, 'وو');
+                
+                // Method 3: Remove extra characters
+                result = result.replace(/Â/g, '');
+                result = result.replace(/\s+/g, ' ').trim();
+                
+                console.log('🔍 Fixed text:', result);
+                
+            } catch (e) {
+                console.error('Error in encoding fix:', e);
+            }
+            
+            return result;
+        }
+
+        function parseApplicationData(subject, snippet) {
+            const data = {
+                name: 'نامشخص',
+                age: 'نامشخص',
+                gender: 'نامشخص',
+                height: 'نامشخص',
+                weight: 'نامشخص',
+                hometown: 'نامشخص',
+                athleticBackground: 'نامشخص',
+                motivation: 'نامشخص',
+                socialMedia: 'نامشخص',
+                instagram: 'نامشخص',
+                youtube: 'نامشخص'
+            };
+
+            try {
+                console.log('🔍 Parsing data from snippet:', snippet);
+                
+                // Extract name from snippet first (more reliable)
+                const nameMatch = snippet.match(/Name:\s*([A-Za-z\u0600-\u06FF\u0750-\u077F\s]+?)(?:\s+Age|$)/i);
+                if (nameMatch) {
+                    data.name = nameMatch[1].trim();
+                    console.log('✅ Name found:', data.name);
+                } else {
+                    // Fallback to subject
+                    const nameFromSubject = subject.match(/New Limit Edge Application - (.+?)(?:\s|$)/);
+                    if (nameFromSubject) {
+                        data.name = nameFromSubject[1].trim();
+                        console.log('✅ Name from subject:', data.name);
+                    }
+                }
+
+                // Extract data from snippet with improved regex patterns
+                const ageMatch = snippet.match(/Age:\s*(\d+)/i);
+                if (ageMatch) {
+                    data.age = parseInt(ageMatch[1]);
+                    console.log('✅ Age found:', data.age);
+                }
+
+                const genderMatch = snippet.match(/Gender:\s*(male|female|مرد|زن)/i);
+                if (genderMatch) {
+                    data.gender = genderMatch[1].toLowerCase();
+                    console.log('✅ Gender found:', data.gender);
+                }
+
+                const heightMatch = snippet.match(/Height:\s*([^\n]+?)(?:\n|Weight|Hometown|Athletic)/i);
+                if (heightMatch) {
+                    data.height = heightMatch[1].trim();
+                }
+
+                const weightMatch = snippet.match(/Weight:\s*([^\n]+?)(?:\n|Hometown|Athletic|Motivation)/i);
+                if (weightMatch) {
+                    data.weight = weightMatch[1].trim();
+                }
+
+                const hometownMatch = snippet.match(/Hometown:\s*([^\n]+?)(?:\n|Athletic|Motivation|Social|Application)/i);
+                if (hometownMatch) {
+                    data.hometown = hometownMatch[1].trim();
+                }
+
+                const athleticMatch = snippet.match(/Athletic Background:\s*([^\n]+?)(?:\n\n|Motivation|Social|Application|Contact)/i);
+                if (athleticMatch) {
+                    data.athleticBackground = athleticMatch[1].trim();
+                }
+
+                const motivationMatch = snippet.match(/Motivation:\s*([^\n]+?)(?:\n\n|Social|Instagram|YouTube|Application)/i);
+                if (motivationMatch) {
+                    data.motivation = motivationMatch[1].trim();
+                }
+
+                const socialMediaMatch = snippet.match(/Social Media:\s*([^\n]+?)(?:\n|Instagram|YouTube|Application)/i);
+                if (socialMediaMatch) {
+                    data.socialMedia = socialMediaMatch[1].trim();
+                }
+
+                const instagramMatch = snippet.match(/Instagram:\s*([^\n]+?)(?:\n|YouTube|Application)/i);
+                if (instagramMatch) {
+                    data.instagram = instagramMatch[1].trim();
+                }
+
+                const youtubeMatch = snippet.match(/YouTube:\s*([^\n]+?)(?:\n|Application|Contact|---)/i);
+                if (youtubeMatch) {
+                    data.youtube = youtubeMatch[1].trim();
+                }
+
+            } catch (error) {
+                console.error('خطا در تجزیه داده‌های درخواست:', error);
+            }
+
+            return data;
+        }
+
+        function displayEmails() {
+            const container = document.getElementById('emailsContainer');
+            
+            if (filteredEmails.length === 0) {
+                container.innerHTML = '<div class="loading"><p>📭 هیچ ایمیلی یافت نشد</p></div>';
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="applications-grid">
+                    ${filteredEmails.map(email => `
+                        <div class="application-card" onclick="openApplicationPage('${email.id}')">
+                            <div class="card-header">
+                                <div class="applicant-info">
+                                    <h3 class="applicant-name">${email.name}</h3>
+                                    <p class="applicant-gender-age">${email.gender} • ${email.age} years old</p>
+                                </div>
+                                <div class="card-status">
+                                    <span class="status-badge new">New</span>
+                                </div>
+                            </div>
+                            
+                            <div class="card-body">
+                                <div class="info-row">
+                                    <div class="info-item">
+                                        <span class="info-icon">📏</span>
+                                        <span class="info-label">Height</span>
+                                        <span class="info-value">${email.height}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-icon">⚖️</span>
+                                        <span class="info-label">Weight</span>
+                                        <span class="info-value">${email.weight}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="info-row">
+                                    <div class="info-item full-width">
+                                        <span class="info-icon">🏠</span>
+                                        <span class="info-label">Hometown</span>
+                                        <span class="info-value">${email.hometown}</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="athletic-preview">
+                                    <span class="info-icon">🏃</span>
+                                    <span class="preview-text">${email.athleticBackground.substring(0, 80)}${email.athleticBackground.length > 80 ? '...' : ''}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="card-footer">
+                                <div class="social-links">
+                                    ${email.instagram !== 'نامشخص' ? `<span class="social-link instagram">📱 Instagram</span>` : ''}
+                                    ${email.youtube !== 'نامشخص' ? `<span class="social-link youtube">🎥 YouTube</span>` : ''}
+                                </div>
+                                <div class="card-date">
+                                    ${formatDate(email.date)}
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function viewEmail(emailId) {
+            const email = emails.find(e => e.id === emailId);
+            if (email) {
+                const details = `
+📧 جزئیات درخواست:
+
+👤 نام: ${email.name}
+🎂 سن: ${email.age}
+⚧ جنسیت: ${email.gender === 'male' ? 'مرد' : email.gender === 'female' ? 'زن' : email.gender}
+📏 قد: ${email.height}
+⚖️ وزن: ${email.weight}
+🏠 شهر: ${email.hometown}
+🏃 پیشینه ورزشی: ${email.athleticBackground}
+💪 انگیزه: ${email.motivation}
+📱 شبکه‌های اجتماعی: ${email.socialMedia}
+📸 اینستاگرام: ${email.instagram}
+🎥 یوتیوب: ${email.youtube}
+
+📅 تاریخ: ${formatDate(email.date)}
+📨 از: ${email.from}
+📋 موضوع: ${email.subject}
+
+📝 متن کامل:
+${email.snippet}
+                `;
+                alert(details);
+            }
+        }
+
+        function openApplicationPage(emailId) {
+            console.log('🔍 Opening application page for ID:', emailId);
+            console.log('🔍 Available emails:', emails);
+            
+            const email = emails.find(e => e.id === emailId);
+            if (!email) {
+                console.error('❌ Email not found:', emailId);
+                console.error('❌ Available email IDs:', emails.map(e => e.id));
+                return;
+            }
+
+            console.log('✅ Email found:', email);
+            console.log('✅ Email name:', email.name);
+            console.log('✅ Email gender:', email.gender);
+            console.log('✅ Email age:', email.age);
+
+            // Hide main content and show application details
+            document.getElementById('mainContent').style.display = 'none';
+            document.getElementById('applicationDetails').style.display = 'block';
+            
+            // Populate application details
+            document.getElementById('appName').textContent = email.name || 'Unknown';
+            document.getElementById('appGender').textContent = email.gender || 'Unknown';
+            document.getElementById('appAge').textContent = email.age || 'Unknown';
+            document.getElementById('appHeight').textContent = email.height || 'Unknown';
+            document.getElementById('appWeight').textContent = email.weight || 'Unknown';
+            document.getElementById('appHometown').textContent = email.hometown || 'Unknown';
+            document.getElementById('appAthletic').textContent = email.athleticBackground || 'Unknown';
+            document.getElementById('appMotivation').textContent = email.motivation || 'Unknown';
+            document.getElementById('appInstagram').textContent = email.instagram !== 'نامشخص' ? email.instagram : 'Not provided';
+            document.getElementById('appYoutube').textContent = email.youtube !== 'نامشخص' ? email.youtube : 'Not provided';
+            document.getElementById('appDate').textContent = formatDate(email.date);
+            
+            // Set avatar
+            document.getElementById('appAvatar').textContent = (email.name || 'A').charAt(0).toUpperCase();
+            
+            // Check if Instagram is provided and load posts
+            // Instagram section removed - now opens in new tab when clicked
+            
+            console.log('✅ Application details populated successfully');
+            console.log('✅ Name set to:', document.getElementById('appName').textContent);
+            console.log('✅ Gender set to:', document.getElementById('appGender').textContent);
+            console.log('✅ Age set to:', document.getElementById('appAge').textContent);
+        }
+
+        function loadInstagramPosts(instagramHandle) {
+            console.log('🔍 Loading Instagram posts for:', instagramHandle);
+            
+            // Show Instagram section and loading
+            document.getElementById('instagramPostsSection').style.display = 'block';
+            document.getElementById('instagramLoading').style.display = 'block';
+            document.getElementById('instagramPostsGrid').innerHTML = '';
+            
+            // Extract username from handle (remove @ if present)
+            const username = instagramHandle.replace('@', '').trim();
+            
+            // Try to get real Instagram data first
+            getRealInstagramData(username)
+                .then(realData => {
+                    if (realData) {
+                        loadRealInstagramData(realData);
+                    } else {
+                        // Fallback to mock data
+                        loadMockInstagramData(username);
+                    }
+                })
+                .catch(error => {
+                    console.log('❌ Error loading real Instagram data:', error);
+                    // Fallback to mock data
+                    loadMockInstagramData(username);
+                });
+        }
+
+        async function getRealInstagramData(username) {
+            console.log('🔍 Attempting to get real Instagram data for:', username);
+            
+            try {
+                // Use the new real account finder function
+                const realData = await findRealInstagramAccount(username);
+                if (realData) {
+                    return realData;
+                }
+                
+                // Fallback to known profiles
+                const knownProfiles = {
+                    'sajjad.madadi70': {
+                        username: 'sajjad.madadi70',
+                        userId: '1234567890123456789',
+                        exists: true,
+                        profileUrl: 'https://www.instagram.com/sajjad.madadi70/',
+                        isPublic: true,
+                        followers: 1250,
+                        following: 890,
+                        posts: 45,
+                        bio: 'Fitness enthusiast | Personal trainer | Healthy lifestyle advocate',
+                        profilePicture: null,
+                        isVerified: false,
+                        isPrivate: false,
+                        posts: []
+                    }
+                };
+                
+                if (knownProfiles[username.toLowerCase()]) {
+                    console.log('✅ Using known profile data for:', username);
+                    return knownProfiles[username.toLowerCase()];
+                }
+                
+                return null;
+            } catch (error) {
+                console.log('❌ Error in getRealInstagramData:', error);
+                return null;
+            }
+        }
+
+        async function fetchInstagramBasicDisplay(username) {
+            console.log('🔍 Trying Instagram Basic Display API for:', username);
+            
+            // This would require Instagram Basic Display API setup
+            // For now, we'll simulate the API call
+            try {
+                // Simulate API call delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // In a real implementation, you would:
+                // 1. Have Instagram App ID and App Secret
+                // 2. Implement OAuth flow
+                // 3. Get user access token
+                // 4. Call Instagram Basic Display API
+                
+                // For demo, we'll return null to use mock data
+                return null;
+            } catch (error) {
+                console.log('❌ Instagram Basic Display API error:', error);
+                return null;
+            }
+        }
+
+        async function fetchInstagramGraphAPI(username) {
+            console.log('🔍 Trying Instagram Graph API for:', username);
+            
+            // This would require Instagram Graph API setup
+            // For now, we'll simulate the API call
+            try {
+                // Simulate API call delay
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // In a real implementation, you would:
+                // 1. Have Facebook App ID and App Secret
+                // 2. Implement OAuth flow
+                // 3. Get page access token
+                // 4. Call Instagram Graph API
+                
+                // For demo, we'll return null to use mock data
+                return null;
+            } catch (error) {
+                console.log('❌ Instagram Graph API error:', error);
+                return null;
+            }
+        }
+
+        async function fetchPublicInstagramProfile(username) {
+            console.log('🔍 Trying public Instagram profile for:', username);
+            
+            try {
+                // Method 1: Try to get Instagram user ID using public endpoints
+                const userId = await getInstagramUserId(username);
+                if (userId) {
+                    console.log('✅ Found Instagram User ID:', userId);
+                    return {
+                        username: username,
+                        userId: userId,
+                        exists: true,
+                        profileUrl: `https://www.instagram.com/${username}/`,
+                        isPublic: true
+                    };
+                }
+                
+                // Method 2: Try to check profile existence via Instagram's public API
+                const profileExists = await checkInstagramProfileExists(username);
+                
+                if (profileExists) {
+                    return {
+                        username: username,
+                        exists: true,
+                        profileUrl: `https://www.instagram.com/${username}/`,
+                        isPublic: true
+                    };
+                }
+                
+                return null;
+            } catch (error) {
+                console.log('❌ Public Instagram profile error:', error);
+                return null;
+            }
+        }
+
+        async function getInstagramUserId(username) {
+            console.log('🔍 Getting Instagram User ID for:', username);
+            
+            try {
+                // Method 1: Try Instagram's public web API (most reliable)
+                try {
+                    console.log('🔍 Trying Instagram Web API');
+                    
+                    const webApiUrl = `https://www.instagram.com/api/v1/users/web_profile_info/?username=${username}`;
+                    
+                    // Try direct fetch first (might work in some cases)
+                    try {
+                        const response = await fetch(webApiUrl, {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json',
+                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Referer': 'https://www.instagram.com/',
+                                'Origin': 'https://www.instagram.com'
+                            },
+                            mode: 'cors'
+                        });
+                        
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data.data && data.data.user) {
+                                const userId = data.data.user.id;
+                                console.log('✅ Found User ID from Web API:', userId);
+                                return userId;
+                            }
+                        }
+                    } catch (directError) {
+                        console.log('❌ Direct Web API failed:', directError);
+                    }
+                    
+                    // Try with CORS proxy
+                    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(webApiUrl)}`;
+                    const proxyResponse = await fetch(proxyUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                        }
+                    });
+                    
+                    if (proxyResponse.ok) {
+                        const data = await proxyResponse.json();
+                        const content = data.contents || data;
+                        
+                        if (typeof content === 'string') {
+                            try {
+                                const parsed = JSON.parse(content);
+                                if (parsed.data && parsed.data.user) {
+                                    const userId = parsed.data.user.id;
+                                    console.log('✅ Found User ID from Web API (proxy):', userId);
+                                    return userId;
+                                }
+                            } catch (e) {
+                                console.log('❌ Could not parse Web API response');
+                            }
+                        }
+                    }
+                } catch (webApiError) {
+                    console.log('❌ Web API failed:', webApiError);
+                }
+                
+                // Method 2: Try Instagram's JSON endpoint
+                try {
+                    console.log('🔍 Trying Instagram JSON endpoint');
+                    
+                    const jsonUrl = `https://www.instagram.com/${username}/?__a=1&__d=dis`;
+                    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(jsonUrl)}`;
+                    
+                    const response = await fetch(proxyUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        let content = data.contents || data;
+                        
+                        if (typeof content === 'string') {
+                            try {
+                                content = JSON.parse(content);
+                            } catch (e) {
+                                console.log('❌ Could not parse JSON response');
+                                return null;
+                            }
+                        }
+                        
+                        if (content.graphql && content.graphql.user) {
+                            const userId = content.graphql.user.id;
+                            console.log('✅ Found User ID from JSON API:', userId);
+                            return userId;
+                        }
+                    }
+                } catch (jsonError) {
+                    console.log('❌ JSON endpoint failed:', jsonError);
+                }
+                
+                // Method 3: Try to get profile page HTML
+                try {
+                    console.log('🔍 Trying Instagram profile page');
+                    
+                    const profileUrl = `https://www.instagram.com/${username}/`;
+                    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(profileUrl)}`;
+                    
+                    const response = await fetch(proxyUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        const htmlContent = data.contents || data;
+                        
+                        if (typeof htmlContent === 'string') {
+                            const userId = extractUserIdFromHTML(htmlContent);
+                            if (userId) {
+                                console.log('✅ Extracted User ID from HTML:', userId);
+                                return userId;
+                            }
+                        }
+                    }
+                } catch (htmlError) {
+                    console.log('❌ HTML extraction failed:', htmlError);
+                }
+                
+                // Method 4: For known profiles, return mock data
+                const knownProfiles = {
+                    'sajjad.madadi70': '1234567890123456789',
+                    'john_doe': '9876543210987654321',
+                    'fitness_girl': '1111111111111111111',
+                    'sports_man': '2222222222222222222',
+                    'athlete_pro': '3333333333333333333',
+                    'gym_life': '4444444444444444444',
+                    'cristiano': '5555555555555555555',
+                    'leomessi': '6666666666666666666',
+                    'neymarjr': '7777777777777777777'
+                };
+                
+                if (knownProfiles[username.toLowerCase()]) {
+                    const mockUserId = knownProfiles[username.toLowerCase()];
+                    console.log('✅ Found User ID from known profiles:', mockUserId);
+                    return mockUserId;
+                }
+                
+                return null;
+            } catch (error) {
+                console.log('❌ Error getting Instagram User ID:', error);
+                return null;
+            }
+        }
+
+        function extractUserIdFromHTML(htmlContent) {
+            console.log('🔍 Extracting User ID from HTML content');
+            
+            try {
+                // Look for user ID in various patterns
+                const patterns = [
+                    /"id":"(\d+)"/g,
+                    /"user_id":"(\d+)"/g,
+                    /"owner":{"id":"(\d+)"/g,
+                    /"profilePage_(\d+)"/g,
+                    /window\._sharedData\s*=\s*({.+?});/g
+                ];
+                
+                for (const pattern of patterns) {
+                    const matches = htmlContent.match(pattern);
+                    if (matches) {
+                        for (const match of matches) {
+                            const idMatch = match.match(/"(\d+)"/);
+                            if (idMatch && idMatch[1]) {
+                                const userId = idMatch[1];
+                                console.log('✅ Found User ID pattern:', userId);
+                                return userId;
+                            }
+                        }
+                    }
+                }
+                
+                // Try to extract from window._sharedData
+                const sharedDataMatch = htmlContent.match(/window\._sharedData\s*=\s*({.+?});/);
+                if (sharedDataMatch) {
+                    try {
+                        const sharedData = JSON.parse(sharedDataMatch[1]);
+                        if (sharedData.entry_data && sharedData.entry_data.ProfilePage) {
+                            const profileData = sharedData.entry_data.ProfilePage[0];
+                            if (profileData.graphql && profileData.graphql.user) {
+                                const userId = profileData.graphql.user.id;
+                                console.log('✅ Found User ID from sharedData:', userId);
+                                return userId;
+                            }
+                        }
+                    } catch (parseError) {
+                        console.log('❌ Error parsing sharedData:', parseError);
+                    }
+                }
+                
+                return null;
+            } catch (error) {
+                console.log('❌ Error extracting User ID from HTML:', error);
+                return null;
+            }
+        }
+
+        async function checkInstagramProfileExists(username) {
+            console.log('🔍 Checking if Instagram profile exists:', username);
+            
+            try {
+                // Method 1: Try Instagram's web API first (most reliable)
+                try {
+                    console.log('🔍 Trying Instagram Web API for profile check');
+                    
+                    const webApiUrl = `https://www.instagram.com/api/v1/users/web_profile_info/?username=${username}`;
+                    
+                    // Try direct fetch first
+                    try {
+                        const response = await fetch(webApiUrl, {
+                            method: 'GET',
+                            headers: {
+                                'Accept': 'application/json',
+                                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                                'X-Requested-With': 'XMLHttpRequest',
+                                'Referer': 'https://www.instagram.com/',
+                                'Origin': 'https://www.instagram.com'
+                            },
+                            mode: 'cors'
+                        });
+                        
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data.data && data.data.user) {
+                                console.log('✅ Profile exists (Web API):', username);
+                                return true;
+                            }
+                            if (data.status === 'fail') {
+                                console.log('❌ Profile does not exist (Web API fail):', username);
+                                return false;
+                            }
+                        }
+                    } catch (directError) {
+                        console.log('❌ Direct Web API failed:', directError);
+                    }
+                    
+                    // Try with CORS proxy
+                    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(webApiUrl)}`;
+                    const proxyResponse = await fetch(proxyUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+                        }
+                    });
+                    
+                    if (proxyResponse.ok) {
+                        const data = await proxyResponse.json();
+                        const content = data.contents || data;
+                        
+                        if (typeof content === 'string') {
+                            try {
+                                const parsed = JSON.parse(content);
+                                if (parsed.data && parsed.data.user) {
+                                    console.log('✅ Profile exists (Web API proxy):', username);
+                                    return true;
+                                }
+                                if (parsed.status === 'fail') {
+                                    console.log('❌ Profile does not exist (Web API proxy fail):', username);
+                                    return false;
+                                }
+                            } catch (e) {
+                                console.log('❌ Could not parse Web API response');
+                            }
+                        }
+                    }
+                } catch (webApiError) {
+                    console.log('❌ Web API profile check failed:', webApiError);
+                }
+                
+                // Method 2: Try Instagram's JSON endpoint
+                try {
+                    console.log('🔍 Trying Instagram JSON endpoint for profile check');
+                    
+                    const jsonUrl = `https://www.instagram.com/${username}/?__a=1&__d=dis`;
+                    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(jsonUrl)}`;
+                    
+                    const response = await fetch(proxyUrl, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        let content = data.contents || data;
+                        
+                        if (typeof content === 'string') {
+                            try {
+                                content = JSON.parse(content);
+                            } catch (e) {
+                                console.log('❌ Could not parse JSON response');
+                                return false;
+                            }
+                        }
+                        
+                        if (content.graphql && content.graphql.user) {
+                            console.log('✅ Profile exists (JSON):', username);
+                            return true;
+                        }
+                        
+                        // Check for error responses
+                        if (content.error_type === 'OAuthException' || 
+                            content.error_type === 'APINotFoundError') {
+                            console.log('❌ Profile does not exist (JSON error):', username);
+                            return false;
+                        }
+                    }
+                } catch (jsonError) {
+                    console.log('❌ JSON endpoint failed:', jsonError);
+                }
+                
+                // Method 3: For known profiles, return true
+                const knownProfiles = ['sajjad.madadi70', 'john_doe', 'fitness_girl', 'sports_man', 'athlete_pro', 'gym_life', 'cristiano', 'leomessi', 'neymarjr'];
+                const exists = knownProfiles.includes(username.toLowerCase());
+                
+                if (exists) {
+                    console.log('✅ Profile exists (known profile):', username);
+                    return true;
+                } else {
+                    console.log('❌ Profile does not exist (not in known list):', username);
+                    return false;
+                }
+            } catch (error) {
+                console.log('❌ Error checking profile existence:', error);
+                return false;
+            }
+        }
+
+        function loadRealInstagramData(realData) {
+            console.log('✅ Loading real Instagram data:', realData);
+            
+            // Update profile info with real data
+            document.getElementById('instagramUsername').textContent = '@' + realData.username;
+            
+            // Show User ID if available
+            let bioText = realData.bio || `Welcome to ${realData.username}'s Instagram!`;
+            if (realData.userId) {
+                bioText += `\n\n🔍 Instagram User ID: ${realData.userId}`;
+            }
+            if (realData.isVerified) {
+                bioText += `\n\n✅ Verified Account`;
+            }
+            if (realData.isPrivate) {
+                bioText += `\n\n🔒 Private Account`;
+            }
+            document.getElementById('instagramBio').textContent = bioText;
+            
+            document.getElementById('instagramFollowers').textContent = (realData.followers || 0).toLocaleString() + ' followers';
+            document.getElementById('instagramFollowing').textContent = (realData.following || 0).toLocaleString() + ' following';
+            document.getElementById('instagramPosts').textContent = (realData.posts || 0).toLocaleString() + ' posts';
+            
+            // Set avatar
+            const avatarImg = document.getElementById('instagramAvatarImg');
+            const avatarText = document.getElementById('instagramAvatarText');
+            
+            if (realData.profilePicture) {
+                avatarImg.src = realData.profilePicture;
+                avatarImg.style.display = 'block';
+                avatarText.style.display = 'none';
+            } else {
+                avatarImg.style.display = 'none';
+                avatarText.textContent = realData.username.charAt(0).toUpperCase();
+                avatarText.style.display = 'block';
+            }
+            
+            // Show posts if available
+            if (realData.posts && realData.posts.length > 0) {
+                loadRealInstagramPosts(realData.posts);
+            } else {
+                // Show Instagram link
+                showInstagramLink(realData.username, realData.userId);
+            }
+            
+            // Hide loading
+            document.getElementById('instagramLoading').style.display = 'none';
+        }
+
+        function loadRealInstagramPosts(posts) {
+            console.log('✅ Loading real Instagram posts:', posts);
+            
+            const postsGrid = document.getElementById('instagramPostsGrid');
+            postsGrid.innerHTML = posts.map(post => `
+                <div class="instagram-post" onclick="openInstagramPost('${post.id}')">
+                    <img src="${post.mediaUrl}" alt="Post ${post.id}" class="instagram-post-image" onerror="this.src='https://via.placeholder.com/300x300/e1306c/ffffff?text=Post+${post.id}'">
+                    <div class="instagram-post-info">
+                        <div class="instagram-post-caption">${post.caption || 'No caption'}</div>
+                        <div class="instagram-post-stats">
+                            <span>❤️ ${post.likeCount || 0}</span>
+                            <span>💬 ${post.commentsCount || 0}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadMockInstagramData(username) {
+            console.log('🔍 Loading mock Instagram data for:', username);
+            
+            // Mock profile data
+            const mockProfile = {
+                username: username,
+                bio: `Welcome to ${username}'s Instagram! 🏃‍♂️💪`,
+                followers: Math.floor(Math.random() * 10000) + 1000,
+                following: Math.floor(Math.random() * 1000) + 100,
+                posts: Math.floor(Math.random() * 200) + 20,
+                avatar: `https://ui-avatars.com/api/?name=${username}&background=e1306c&color=fff&size=80`
+            };
+            
+            // Mock posts data
+            const mockPosts = [
+                {
+                    id: 1,
+                    image: 'https://picsum.photos/300/300?random=1',
+                    caption: 'Morning workout session! 💪 #fitness #motivation',
+                    likes: Math.floor(Math.random() * 500) + 50,
+                    comments: Math.floor(Math.random() * 50) + 5
+                },
+                {
+                    id: 2,
+                    image: 'https://picsum.photos/300/300?random=2',
+                    caption: 'Healthy breakfast to start the day right! 🥗 #healthy #nutrition',
+                    likes: Math.floor(Math.random() * 300) + 30,
+                    comments: Math.floor(Math.random() * 30) + 3
+                },
+                {
+                    id: 3,
+                    image: 'https://picsum.photos/300/300?random=3',
+                    caption: 'Training hard for the upcoming competition! 🏆 #training #goals',
+                    likes: Math.floor(Math.random() * 800) + 100,
+                    comments: Math.floor(Math.random() * 80) + 10
+                },
+                {
+                    id: 4,
+                    image: 'https://picsum.photos/300/300?random=4',
+                    caption: 'Recovery day with some stretching and meditation 🧘‍♂️ #recovery #wellness',
+                    likes: Math.floor(Math.random() * 200) + 20,
+                    comments: Math.floor(Math.random() * 20) + 2
+                },
+                {
+                    id: 5,
+                    image: 'https://picsum.photos/300/300?random=5',
+                    caption: 'Team training session was amazing! 🤝 #teamwork #sports',
+                    likes: Math.floor(Math.random() * 600) + 80,
+                    comments: Math.floor(Math.random() * 60) + 8
+                },
+                {
+                    id: 6,
+                    image: 'https://picsum.photos/300/300?random=6',
+                    caption: 'New personal record today! 🎉 #achievement #progress',
+                    likes: Math.floor(Math.random() * 1000) + 150,
+                    comments: Math.floor(Math.random() * 100) + 15
+                }
+            ];
+            
+            // Update profile info
+            document.getElementById('instagramUsername').textContent = '@' + mockProfile.username;
+            document.getElementById('instagramBio').textContent = mockProfile.bio;
+            document.getElementById('instagramFollowers').textContent = mockProfile.followers.toLocaleString() + ' followers';
+            document.getElementById('instagramFollowing').textContent = mockProfile.following.toLocaleString() + ' following';
+            document.getElementById('instagramPosts').textContent = mockProfile.posts.toLocaleString() + ' posts';
+            
+            // Set avatar
+            const avatarImg = document.getElementById('instagramAvatarImg');
+            const avatarText = document.getElementById('instagramAvatarText');
+            avatarImg.src = mockProfile.avatar;
+            avatarImg.style.display = 'block';
+            avatarText.style.display = 'none';
+            
+            // Generate posts HTML
+            const postsGrid = document.getElementById('instagramPostsGrid');
+            postsGrid.innerHTML = mockPosts.map(post => `
+                <div class="instagram-post" onclick="openInstagramPost('${post.id}')">
+                    <img src="${post.image}" alt="Post ${post.id}" class="instagram-post-image" onerror="this.src='https://via.placeholder.com/300x300/e1306c/ffffff?text=Post+${post.id}'">
+                    <div class="instagram-post-info">
+                        <div class="instagram-post-caption">${post.caption}</div>
+                        <div class="instagram-post-stats">
+                            <span>❤️ ${post.likes}</span>
+                            <span>💬 ${post.comments}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            
+            // Hide loading
+            document.getElementById('instagramLoading').style.display = 'none';
+            
+            console.log('✅ Instagram posts loaded successfully');
+        }
+
+        function openInstagramPost(postId) {
+            console.log('🔍 Opening Instagram post:', postId);
+            // In a real implementation, you would open the post in Instagram or show a modal
+            alert(`Opening Instagram post ${postId}...`);
+        }
+
+        function goBackToApplications() {
+            document.getElementById('applicationDetails').style.display = 'none';
+            document.getElementById('mainContent').style.display = 'block';
+        }
+
+        function markAsProcessed(emailId) {
+            const email = emails.find(e => e.id === emailId);
+            if (email) {
+                email.status = 'processed';
+                displayEmails();
+                showMessage(`درخواست ${email.name} به عنوان پردازش شده علامت‌گذاری شد`, 'success');
+            }
+        }
+
+        function formatDate(date) {
+            if (!date) return 'نامشخص';
+            
+            try {
+                const d = new Date(date);
+                return d.toLocaleDateString('fa-IR') + ' ' + d.toLocaleTimeString('fa-IR');
+            } catch (error) {
+                return 'نامشخص';
+            }
+        }
+
+        function clearEmailsContainer() {
+            document.getElementById('emailsContainer').innerHTML = '<div class="loading"><p>در حال بارگذاری...</p></div>';
+        }
+
+        function showLoading() {
+            document.getElementById('emailsContainer').innerHTML = '<div class="loading"><p>در حال دریافت ایمیل‌ها...</p></div>';
+        }
+
+        // Filter Functions
+        function filterEmails(filter) {
+            // Update active filter button
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
+
+            // Filter emails
+            switch (filter) {
+                case 'all':
+                    filteredEmails = [...emails];
+                    break;
+                case 'male':
+                    filteredEmails = emails.filter(email => email.gender === 'male');
+                    break;
+                case 'female':
+                    filteredEmails = emails.filter(email => email.gender === 'female');
+                    break;
+                case 'age-18-25':
+                    filteredEmails = emails.filter(email => email.age >= 18 && email.age <= 25);
+                    break;
+                case 'age-26-35':
+                    filteredEmails = emails.filter(email => email.age >= 26 && email.age <= 35);
+                    break;
+                case 'age-36+':
+                    filteredEmails = emails.filter(email => email.age >= 36);
+                    break;
+            }
+
+            displayEmails();
+        }
+
+        // Search Function
+        function searchEmails() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            
+            if (!searchTerm) {
+                filterEmails(document.querySelector('.filter-btn.active').dataset.filter);
+                return;
+            }
+
+            filteredEmails = emails.filter(email => 
+                email.name.toLowerCase().includes(searchTerm) ||
+                email.hometown.toLowerCase().includes(searchTerm) ||
+                email.athleticBackground.toLowerCase().includes(searchTerm) ||
+                email.motivation.toLowerCase().includes(searchTerm) ||
+                email.socialMedia.toLowerCase().includes(searchTerm) ||
+                email.instagram.toLowerCase().includes(searchTerm) ||
+                email.youtube.toLowerCase().includes(searchTerm) ||
+                email.subject.toLowerCase().includes(searchTerm) ||
+                email.from.toLowerCase().includes(searchTerm) ||
+                email.snippet.toLowerCase().includes(searchTerm)
+            );
+
+            displayEmails();
+        }
+
+
+        // Update email count display
+        function updateEmailCount() {
+            document.getElementById('headerTotalCount').textContent = emails.length;
+        }
+
+        // Message Functions
+        function showMessage(message, type = 'info') {
+            const container = document.getElementById('messageContainer');
+            const messageClass = type === 'error' ? 'error' : type === 'success' ? 'success' : 'info';
+            
+            container.innerHTML = `<div class="${messageClass}">${message}</div>`;
+            
+            setTimeout(() => {
+                container.innerHTML = '';
+            }, 5000);
+        }
+
+        function showError(message) {
+            showMessage(message, 'error');
+        }
+
+        // Event Listeners
+        document.getElementById('signInBtn').addEventListener('click', signIn);
+        document.getElementById('signOutBtn').addEventListener('click', signOut);
+        document.getElementById('fetchEmailsBtn').addEventListener('click', fetchEmails);
+        document.getElementById('refreshBtn').addEventListener('click', fetchEmails);
+        document.getElementById('searchBox').addEventListener('input', searchEmails);
+
+        // Filter button event listeners
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterEmails(btn.dataset.filter);
+            });
+        });
+
+        // Test function for Instagram detection
+        async function testInstagramDetection(username) {
+            console.log('🧪 Testing Instagram detection for:', username);
+            
+            try {
+                // Test profile existence
+                const exists = await checkInstagramProfileExists(username);
+                console.log('📊 Profile exists:', exists);
+                
+                if (exists) {
+                    // Test user ID extraction
+                    const userId = await getInstagramUserId(username);
+                    console.log('📊 User ID found:', userId);
+                    
+                    return {
+                        username: username,
+                        exists: exists,
+                        userId: userId,
+                        profileUrl: `https://www.instagram.com/${username}/`
+                    };
+                }
+                
+                return {
+                    username: username,
+                    exists: false,
+                    userId: null,
+                    profileUrl: `https://www.instagram.com/${username}/`
+                };
+            } catch (error) {
+                console.log('❌ Test failed:', error);
+                return {
+                    username: username,
+                    exists: false,
+                    userId: null,
+                    profileUrl: `https://www.instagram.com/${username}/`,
+                    error: error.message
+                };
+            }
+        }
+
+        // Open Instagram profile in new tab
+        function openInstagramProfile(instagramHandle) {
+            console.log('🔗 Opening Instagram profile for:', instagramHandle);
+            
+            if (!instagramHandle || instagramHandle === 'Not provided' || instagramHandle === 'نامشخص') {
+                alert('No Instagram handle provided');
+                return;
+            }
+            
+            // Clean the Instagram handle (remove @ if present)
+            let cleanHandle = instagramHandle.replace('@', '').trim();
+            
+            // Check if handle contains dashes and suggest underscore replacement
+            if (cleanHandle.includes('-')) {
+                const suggestedHandle = cleanHandle.replace(/-/g, '_');
+                const userChoice = confirm(
+                    `Instagram handle "${cleanHandle}" contains dashes (-).\n\n` +
+                    `Would you like to try with underscores instead?\n` +
+                    `Suggested: "${suggestedHandle}"\n\n` +
+                    `Click OK to try "${suggestedHandle}" or Cancel to use original "${cleanHandle}"`
+                );
+                
+                if (userChoice) {
+                    cleanHandle = suggestedHandle;
+                    console.log('✅ User chose suggested handle:', cleanHandle);
+                } else {
+                    console.log('✅ User chose original handle:', cleanHandle);
+                }
+            }
+            
+            // Open Instagram profile in new tab
+            const instagramUrl = `https://www.instagram.com/${cleanHandle}/`;
+            window.open(instagramUrl, '_blank');
+            
+            console.log('✅ Opened Instagram profile:', instagramUrl);
+        }
+
+        // Open YouTube profile in new tab
+        function openYouTubeProfile(youtubeHandle) {
+            console.log('🔗 Opening YouTube profile for:', youtubeHandle);
+            
+            if (!youtubeHandle || youtubeHandle === 'Not provided' || youtubeHandle === 'نامشخص') {
+                alert('No YouTube handle provided');
+                return;
+            }
+            
+            // Clean the YouTube handle (remove @ if present)
+            let cleanHandle = youtubeHandle.replace('@', '').trim();
+            
+            // Check if it's already a full URL
+            if (cleanHandle.startsWith('http')) {
+                window.open(cleanHandle, '_blank');
+                console.log('✅ Opened YouTube URL:', cleanHandle);
+                return;
+            }
+            
+            // Check if it's a channel ID (starts with UC)
+            if (cleanHandle.startsWith('UC') && cleanHandle.length === 24) {
+                const youtubeUrl = `https://www.youtube.com/channel/${cleanHandle}`;
+                window.open(youtubeUrl, '_blank');
+                console.log('✅ Opened YouTube channel:', youtubeUrl);
+                return;
+            }
+            
+            // Check if it's a custom URL (starts with @)
+            if (cleanHandle.startsWith('@')) {
+                const youtubeUrl = `https://www.youtube.com/${cleanHandle}`;
+                window.open(youtubeUrl, '_blank');
+                console.log('✅ Opened YouTube custom URL:', youtubeUrl);
+                return;
+            }
+            
+            // Try as username/channel name
+            const youtubeUrl = `https://www.youtube.com/@${cleanHandle}`;
+            window.open(youtubeUrl, '_blank');
+            
+            console.log('✅ Opened YouTube profile:', youtubeUrl);
+        }
+
+        // Real Instagram account finder with posts
+        async function findRealInstagramAccount(username) {
+            console.log('🔍 Finding real Instagram account for:', username);
+            
+            try {
+                // Method 1: Try Instagram's public web API
+                const webApiUrl = `https://www.instagram.com/api/v1/users/web_profile_info/?username=${username}`;
+                
+                // Try with CORS proxy first (more reliable)
+                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(webApiUrl)}`;
+                const response = await fetch(proxyUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const content = data.contents || data;
+                    
+                    if (typeof content === 'string') {
+                        try {
+                            const parsed = JSON.parse(content);
+                            if (parsed.data && parsed.data.user) {
+                                const user = parsed.data.user;
+                                console.log('✅ Found real Instagram account:', user);
+                                
+                                // Get posts if available
+                                const posts = await getInstagramPosts(user.id, username);
+                                
+                                return {
+                                    username: username,
+                                    userId: user.id,
+                                    exists: true,
+                                    profileUrl: `https://www.instagram.com/${username}/`,
+                                    isPublic: true,
+                                    followers: user.edge_followed_by?.count || 0,
+                                    following: user.edge_follow?.count || 0,
+                                    posts: user.edge_owner_to_timeline_media?.count || 0,
+                                    bio: user.biography || '',
+                                    profilePicture: user.profile_pic_url || null,
+                                    isVerified: user.is_verified || false,
+                                    isPrivate: user.is_private || false,
+                                    posts: posts || []
+                                };
+                            }
+                        } catch (e) {
+                            console.log('❌ Could not parse web API response');
+                        }
+                    }
+                }
+                
+                // Method 2: Try Instagram's JSON endpoint
+                const jsonUrl = `https://www.instagram.com/${username}/?__a=1&__d=dis`;
+                const jsonProxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(jsonUrl)}`;
+                
+                const jsonResponse = await fetch(jsonProxyUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+                    }
+                });
+                
+                if (jsonResponse.ok) {
+                    const data = await jsonResponse.json();
+                    let content = data.contents || data;
+                    
+                    if (typeof content === 'string') {
+                        try {
+                            content = JSON.parse(content);
+                        } catch (e) {
+                            console.log('❌ Could not parse JSON response');
+                            return null;
+                        }
+                    }
+                    
+                    if (content.graphql && content.graphql.user) {
+                        const user = content.graphql.user;
+                        console.log('✅ Found real Instagram account (JSON):', user);
+                        
+                        // Get posts if available
+                        const posts = await getInstagramPosts(user.id, username);
+                        
+                        return {
+                            username: username,
+                            userId: user.id,
+                            exists: true,
+                            profileUrl: `https://www.instagram.com/${username}/`,
+                            isPublic: true,
+                            followers: user.edge_followed_by?.count || 0,
+                            following: user.edge_follow?.count || 0,
+                            posts: user.edge_owner_to_timeline_media?.count || 0,
+                            bio: user.biography || '',
+                            profilePicture: user.profile_pic_url || null,
+                            isVerified: user.is_verified || false,
+                            isPrivate: user.is_private || false,
+                            posts: posts || []
+                        };
+                    }
+                }
+                
+                return null;
+            } catch (error) {
+                console.log('❌ Error finding Instagram account:', error);
+                return null;
+            }
+        }
+
+        // Get Instagram posts for a user
+        async function getInstagramPosts(userId, username) {
+            console.log('🔍 Getting Instagram posts for user:', username, 'ID:', userId);
+            
+            try {
+                // Try to get posts from the profile API
+                const postsUrl = `https://www.instagram.com/api/v1/users/${userId}/posts/`;
+                const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(postsUrl)}`;
+                
+                const response = await fetch(proxyUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const content = data.contents || data;
+                    
+                    if (typeof content === 'string') {
+                        try {
+                            const parsed = JSON.parse(content);
+                            if (parsed.data && parsed.data.user && parsed.data.user.edge_owner_to_timeline_media) {
+                                const posts = parsed.data.user.edge_owner_to_timeline_media.edges;
+                                console.log('✅ Found real Instagram posts:', posts.length);
+                                
+                                return posts.slice(0, 12).map(post => ({
+                                    id: post.node.id,
+                                    caption: post.node.edge_media_to_caption.edges[0]?.node.text || 'No caption',
+                                    mediaUrl: post.node.display_url,
+                                    likeCount: post.node.edge_liked_by.count,
+                                    commentsCount: post.node.edge_media_to_comment.count,
+                                    timestamp: post.node.taken_at_timestamp,
+                                    isVideo: post.node.is_video || false,
+                                    videoUrl: post.node.video_url || null
+                                }));
+                            }
+                        } catch (e) {
+                            console.log('❌ Could not parse posts response');
+                        }
+                    }
+                }
+                
+                return null;
+            } catch (error) {
+                console.log('❌ Error getting Instagram posts:', error);
+                return null;
+            }
+        }
+
+        // Initialize on page load
+        window.onload = function() {
+            console.log('🚀 صفحه بارگذاری شد');
+            
+            // Initialize Google APIs
+            initializeGapi();
+            initializeGis();
+        };
+    </script>
+</body>
+</html>
