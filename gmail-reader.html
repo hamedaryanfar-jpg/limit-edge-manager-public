@@ -2426,7 +2426,7 @@ ${email.snippet}
             
             // Populate application details
             document.getElementById('appName').textContent = email.name || 'Unknown';
-            document.getElementById('appGender').textContent = email.gender === 'male' ? '👨' : email.gender === 'female' ? '👩' : '👤';
+            document.getElementById('appGender').textContent = email.gender === 'male' ? 'Male' : email.gender === 'female' ? 'Female' : 'Unknown';
             document.getElementById('appAge').textContent = email.age ? `${email.age} years old` : 'Unknown';
             document.getElementById('appHeight').textContent = email.height || 'Unknown';
             document.getElementById('appWeight').textContent = email.weight || 'Unknown';
