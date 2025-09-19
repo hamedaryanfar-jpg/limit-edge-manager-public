@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+    <html lang="en" dir="ltr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Limit Edge - مدیریت ایمیل‌ها</title>
+    <title>Limit Edge - Email Management</title>
     <style>
         * {
             margin: 0;
@@ -1734,17 +1734,17 @@
             <div class="header-left">
                 <div id="headerStats" class="header-stats hidden">
                     <span id="headerTotalCount">0</span>
-                    <span>درخواست</span>
+                    <span>Applications</span>
                 </div>
             </div>
             <div class="header-center">
                 <h1>📧 Limit Edge</h1>
-                <p>مدیریت ایمیل‌های درخواست ثبت‌نام</p>
+                <p>Application Email Management</p>
             </div>
             <div class="header-right">
                 <div id="headerUserInfo" class="header-user-info hidden">
-                    <span class="user-status">👤 کاربر وارد شده</span>
-                    <button id="signOutBtn" class="header-signout-btn">خروج</button>
+                    <span class="user-status">👤 User Logged In</span>
+                    <button id="signOutBtn" class="header-signout-btn">Sign Out</button>
                 </div>
             </div>
         </div>
@@ -1752,9 +1752,9 @@
         <div class="main-content">
             <!-- Authentication Section -->
             <div id="authSection" class="auth-section">
-                <h2>🔐 ورود با Google</h2>
-                <p>برای دسترسی به ایمیل‌هایتان ابتدا وارد شوید</p>
-                <button id="signInBtn" class="btn">ورود با Google</button>
+                <h2>🔐 Sign in with Google</h2>
+                <p>Please sign in to access your emails</p>
+                <button id="signInBtn" class="btn">Sign in with Google</button>
             </div>
 
 
@@ -1763,20 +1763,20 @@
             <!-- Controls -->
             <div id="controlsSection" class="controls hidden">
                 <div class="btn-group">
-                    <button id="fetchEmailsBtn" class="btn">📥 دریافت ایمیل‌ها</button>
-                    <button id="refreshBtn" class="btn">🔄 بروزرسانی</button>
+                    <button id="fetchEmailsBtn" class="btn">📥 Fetch Emails</button>
+                    <button id="refreshBtn" class="btn">🔄 Refresh</button>
                 </div>
-                <input type="text" id="searchBox" class="search-box" placeholder="جستجو در ایمیل‌ها...">
+                <input type="text" id="searchBox" class="search-box" placeholder="Search emails...">
             </div>
 
             <!-- Filter Buttons -->
             <div id="filterSection" class="filter-buttons hidden">
-                <button class="filter-btn active" data-filter="all">همه</button>
-                <button class="filter-btn" data-filter="male">مرد</button>
-                <button class="filter-btn" data-filter="female">زن</button>
-                <button class="filter-btn" data-filter="age-18-25">18-25 سال</button>
-                <button class="filter-btn" data-filter="age-26-35">26-35 سال</button>
-                <button class="filter-btn" data-filter="age-36+">36+ سال</button>
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="male">Male</button>
+                <button class="filter-btn" data-filter="female">Female</button>
+                <button class="filter-btn" data-filter="age-18-25">18-25 years</button>
+                <button class="filter-btn" data-filter="age-26-35">26-35 years</button>
+                <button class="filter-btn" data-filter="age-36+">36+ years</button>
             </div>
 
             <!-- Messages -->
@@ -1785,7 +1785,7 @@
             <!-- Emails Container -->
             <div id="emailsContainer" class="emails-container hidden">
                 <div class="loading">
-                    <p>در حال بارگذاری...</p>
+                    <p>Loading...</p>
                 </div>
             </div>
         </div>
@@ -1987,11 +1987,11 @@
             showLoading();
             
             try {
-                console.log('🔍 شروع دریافت ایمیل‌ها...');
+                console.log('🔍 Starting to fetch emails...');
                 
                 // Search for emails with "Application:" in subject
                 const query = 'subject:"Application:" -subject:"New application received" -subject:"EmailJS" -from:"noreply@emailjs.com"';
-                console.log('🔍 جستجو با query:', query);
+                console.log('🔍 Search with query:', query);
                 
                 const response = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${encodeURIComponent(query)}&maxResults=50`, {
                     headers: {
@@ -2009,10 +2009,10 @@
                 }
 
                 const data = await response.json();
-                console.log('📧 داده‌های دریافت شده:', data);
+                console.log('📧 Data received:', data);
 
                 if (!data.messages || data.messages.length === 0) {
-                    showMessage('هیچ ایمیلی یافت نشد', 'info');
+                    showMessage('No emails found', 'info');
                     clearEmailsContainer();
                     return;
                 }
@@ -2026,7 +2026,7 @@
                             emails.push(emailDetail);
                         }
                     } catch (error) {
-                        console.error('خطا در دریافت جزئیات ایمیل:', error);
+                        console.error('Error fetching email details:', error);
                     }
                 }
 
@@ -2038,17 +2038,17 @@
                     !email.from.includes('noreply@emailjs.com')
                 );
                 
-                console.log(`✅ ${emails.length} ایمیل دریافت شد، ${applicationEmails.length} ایمیل با Application:`);
+                console.log(`✅ ${emails.length} emails received, ${applicationEmails.length} emails with Application:`);
                 
                 emails = applicationEmails; // Update emails array
                 filteredEmails = [...emails];
                 displayEmails();
                 updateEmailCount();
-                showMessage(`${emails.length} ایمیل با Application: با موفقیت دریافت شد`, 'success');
+                showMessage(`${emails.length} emails with Application: successfully received`, 'success');
 
             } catch (error) {
-                console.error('❌ خطا در دریافت ایمیل‌ها:', error);
-                showError(`خطا در دریافت ایمیل‌ها: ${error.message}`);
+                console.error('❌ Error fetching emails:', error);
+                showError(`Error fetching emails: ${error.message}`);
             }
         }
 
@@ -3131,11 +3131,11 @@ ${email.snippet}
         }
 
         function clearEmailsContainer() {
-            document.getElementById('emailsContainer').innerHTML = '<div class="loading"><p>در حال بارگذاری...</p></div>';
+            document.getElementById('emailsContainer').innerHTML = '<div class="loading"><p>Loading...</p></div>';
         }
 
         function showLoading() {
-            document.getElementById('emailsContainer').innerHTML = '<div class="loading"><p>در حال دریافت ایمیل‌ها...</p></div>';
+            document.getElementById('emailsContainer').innerHTML = '<div class="loading"><p>Fetching emails...</p></div>';
         }
 
         // Filter Functions
