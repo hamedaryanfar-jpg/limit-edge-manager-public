@@ -711,19 +711,19 @@
 
 
         .back-to-applications-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
+            background: rgba(255,255,255,0.15);
+            border: 2px solid rgba(255,255,255,0.3);
             color: white;
             padding: 12px 24px;
             border-radius: 12px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             transition: all 0.3s ease;
-            align-self: flex-end;
-            margin-left: auto;
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
         }
 
         .back-to-applications-btn:hover {
@@ -1792,11 +1792,10 @@
 
         <!-- Application Details View -->
         <div id="applicationDetails" class="application-details-view" style="display: none;">
-            <button class="back-to-applications-btn" onclick="goBackToApplications()">
-                ← Back to Applications
-            </button>
-            
             <div class="details-header">
+                <button class="back-to-applications-btn" onclick="goBackToApplications()">
+                    ← Back to Applications
+                </button>
                 <div class="details-header-left">
                     <div class="details-avatar" id="appAvatar">👤</div>
                     <div class="details-applicant-info">
