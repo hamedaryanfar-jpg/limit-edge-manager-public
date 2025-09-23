@@ -2126,22 +2126,27 @@
         // Database Functions
         async function autoSaveNewEmails() {
             if (!window.db) {
-                console.log('Firebase not initialized');
+                console.log('❌ Firebase not initialized');
                 return;
             }
 
             if (emails.length === 0) {
-                console.log('No emails to save');
+                console.log('❌ No emails to save');
                 return;
             }
 
             try {
                 console.log('🔄 Auto-saving new emails to database...');
+                console.log('📧 Emails to save:', emails.length);
+                
+                let savedCount = 0;
                 
                 for (const email of emails) {
+                    console.log('📧 Processing email:', email.messageId, email.subject);
+                    
                     // Check if email has valid data
                     if (!email.messageId || !email.subject) {
-                        console.log('Skipping email with missing data:', email);
+                        console.log('⚠️ Skipping email with missing data:', email);
                         continue;
                     }
                     
@@ -2156,13 +2161,18 @@
                         savedAt: new Date().toISOString()
                     };
                     
-                    await window.addDoc(window.collection(window.db, 'emails'), emailData);
+                    console.log('💾 Saving email data:', emailData);
+                    
+                    const docRef = await window.addDoc(window.collection(window.db, 'emails'), emailData);
+                    console.log('✅ Email saved with ID:', docRef.id);
+                    savedCount++;
                 }
                 
-                console.log('✅ Auto-saved emails to database');
+                console.log(`✅ Auto-saved ${savedCount} emails to database`);
                 
             } catch (error) {
                 console.error('❌ Error auto-saving emails:', error);
+                console.error('Error details:', error.message);
             }
         }
 
@@ -2181,11 +2191,16 @@
             
             try {
                 console.log('💾 Saving emails to database...');
+                console.log('📧 Emails to save:', emails.length);
+                
+                let savedCount = 0;
                 
                 for (const email of emails) {
+                    console.log('📧 Processing email:', email.messageId, email.subject);
+                    
                     // Check if email already exists and has valid data
                     if (!email.messageId || !email.subject) {
-                        console.log('Skipping email with missing data:', email);
+                        console.log('⚠️ Skipping email with missing data:', email);
                         continue;
                     }
                     
@@ -2200,14 +2215,19 @@
                         savedAt: new Date().toISOString()
                     };
                     
-                    await window.addDoc(window.collection(window.db, 'emails'), emailData);
+                    console.log('💾 Saving email data:', emailData);
+                    
+                    const docRef = await window.addDoc(window.collection(window.db, 'emails'), emailData);
+                    console.log('✅ Email saved with ID:', docRef.id);
+                    savedCount++;
                 }
                 
-                showMessage(`${emails.length} emails saved to database successfully!`, 'success');
-                console.log('✅ Emails saved to database');
+                showMessage(`${savedCount} emails saved to database successfully!`, 'success');
+                console.log(`✅ ${savedCount} emails saved to database`);
                 
             } catch (error) {
                 console.error('❌ Error saving emails to database:', error);
+                console.error('Error details:', error.message);
                 showError(`Error saving emails: ${error.message}`);
             } finally {
                 hideLoading();
