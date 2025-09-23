@@ -1871,6 +1871,7 @@
             <div id="controlsSection" class="controls hidden">
                 <div class="btn-group">
                     <button id="refreshBtn" class="btn">🔄 Refresh</button>
+                    <button id="clearCacheBtn" class="btn" style="background: #dc3545;">🗑️ Clear Cache</button>
                 </div>
                 <input type="text" id="searchBox" class="search-box" placeholder="Search emails...">
             </div>
@@ -2100,6 +2101,17 @@
             try {
                 console.log('🔍 Starting to fetch emails...');
                 
+                // Check if emails were already fetched today
+                const lastFetchDate = localStorage.getItem('lastEmailFetch');
+                const today = new Date().toDateString();
+                
+                if (lastFetchDate === today) {
+                    console.log('📧 Emails already fetched today, skipping...');
+                    showError('ایمیل‌ها امروز قبلاً بارگذاری شده‌اند. برای بارگذاری مجدد، دکمه Refresh را کلیک کنید.');
+                    hideLoading();
+                    return;
+                }
+                
                 // Search for emails with "Application:" in subject
                 const query = 'subject:"Application:" -subject:"New application received" -subject:"EmailJS" -from:"noreply@emailjs.com"';
                 console.log('🔍 Search with query:', query);
@@ -2190,6 +2202,10 @@
                 filteredEmails = [...emails];
                 displayEmails();
                 updateEmailCount();
+                
+                // Save the fetch date to prevent duplicate fetching
+                localStorage.setItem('lastEmailFetch', new Date().toDateString());
+                
                 showMessage(`${emails.length} emails with Application: successfully received`, 'success');
 
             } catch (error) {
@@ -3375,6 +3391,12 @@ ${email.snippet}
         document.getElementById('signOutBtn').addEventListener('click', signOut);
         document.getElementById('refreshBtn').addEventListener('click', fetchEmails);
         document.getElementById('searchBox').addEventListener('input', searchEmails);
+        
+        // Clear cache button
+        document.getElementById('clearCacheBtn').addEventListener('click', function() {
+            localStorage.removeItem('lastEmailFetch');
+            showMessage('Cache cleared! You can now fetch emails again.', 'success');
+        });
 
         // Filter button event listeners
         document.querySelectorAll('.filter-btn').forEach(btn => {
