@@ -1875,6 +1875,7 @@
                     <button id="saveToDbBtn" class="btn" style="background: #28a745;">💾 Save to Database</button>
                     <button id="loadFromDbBtn" class="btn" style="background: #17a2b8;">📥 Load from Database</button>
                     <button id="checkDbBtn" class="btn" style="background: #6c757d;">🔍 Check Database</button>
+                    <button id="testDbBtn" class="btn" style="background: #ffc107; color: #000;">🧪 Test Database</button>
                 </div>
                 <input type="text" id="searchBox" class="search-box" placeholder="Search emails...">
             </div>
@@ -2300,37 +2301,88 @@
 
             try {
                 console.log('🔍 Checking database status...');
+                console.log('🗄️ Database instance:', window.db);
                 
-                const emailsRef = window.collection(window.db, 'emails');
-                const querySnapshot = await window.getDocs(emailsRef);
+                // Try different collection names
+                const collectionNames = ['emails', 'email', 'applications', 'limit-edge-emails'];
                 
-                console.log('📊 Database check result:', querySnapshot.size, 'documents found');
-                
-                if (querySnapshot.size === 0) {
-                    showMessage('Database is empty. No emails found.', 'warning');
-                } else {
-                    showMessage(`Database contains ${querySnapshot.size} emails.`, 'success');
-                    
-                    // Show first few emails as preview
-                    const previewEmails = [];
-                    querySnapshot.forEach((doc) => {
-                        if (previewEmails.length < 3) {
-                            const data = doc.data();
-                            previewEmails.push({
-                                id: doc.id,
-                                subject: data.subject || 'No Subject',
-                                from: data.from || 'Unknown',
-                                savedAt: data.savedAt || 'Unknown'
+                for (const collectionName of collectionNames) {
+                    try {
+                        console.log(`🔍 Checking collection: ${collectionName}`);
+                        const emailsRef = window.collection(window.db, collectionName);
+                        const querySnapshot = await window.getDocs(emailsRef);
+                        
+                        console.log(`📊 Collection "${collectionName}": ${querySnapshot.size} documents found`);
+                        
+                        if (querySnapshot.size > 0) {
+                            showMessage(`Found ${querySnapshot.size} emails in collection "${collectionName}"`, 'success');
+                            
+                            // Show first few emails as preview
+                            const previewEmails = [];
+                            querySnapshot.forEach((doc) => {
+                                if (previewEmails.length < 3) {
+                                    const data = doc.data();
+                                    previewEmails.push({
+                                        id: doc.id,
+                                        subject: data.subject || 'No Subject',
+                                        from: data.from || 'Unknown',
+                                        savedAt: data.savedAt || 'Unknown'
+                                    });
+                                }
                             });
+                            
+                            console.log('📧 Preview emails:', previewEmails);
+                            return;
                         }
-                    });
-                    
-                    console.log('📧 Preview emails:', previewEmails);
+                    } catch (error) {
+                        console.log(`❌ Error checking collection "${collectionName}":`, error.message);
+                    }
                 }
+                
+                showMessage('No emails found in any collection. Database is empty.', 'warning');
                 
             } catch (error) {
                 console.error('❌ Error checking database:', error);
                 showError(`Error checking database: ${error.message}`);
+            }
+        }
+
+        async function testDatabase() {
+            if (!window.db) {
+                showError('Firebase not initialized. Please refresh the page.');
+                return;
+            }
+
+            try {
+                console.log('🧪 Testing database connection...');
+                
+                // Test saving a simple document
+                const testData = {
+                    test: true,
+                    message: 'Test document',
+                    timestamp: new Date().toISOString()
+                };
+                
+                console.log('💾 Saving test document...');
+                const docRef = await window.addDoc(window.collection(window.db, 'test'), testData);
+                console.log('✅ Test document saved with ID:', docRef.id);
+                
+                // Test reading the document
+                console.log('📖 Reading test document...');
+                const testRef = window.collection(window.db, 'test');
+                const testSnapshot = await window.getDocs(testRef);
+                
+                console.log('📊 Test collection contains:', testSnapshot.size, 'documents');
+                
+                testSnapshot.forEach((doc) => {
+                    console.log('📧 Test document:', doc.id, doc.data());
+                });
+                
+                showMessage('Database test successful!', 'success');
+                
+            } catch (error) {
+                console.error('❌ Database test failed:', error);
+                showError(`Database test failed: ${error.message}`);
             }
         }
 
@@ -3633,6 +3685,7 @@ ${email.snippet}
         document.getElementById('saveToDbBtn').addEventListener('click', saveEmailsToDatabase);
         document.getElementById('loadFromDbBtn').addEventListener('click', loadEmailsFromDatabase);
         document.getElementById('checkDbBtn').addEventListener('click', checkDatabase);
+        document.getElementById('testDbBtn').addEventListener('click', testDatabase);
 
         // Filter button event listeners
         document.querySelectorAll('.filter-btn').forEach(btn => {
