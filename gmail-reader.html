@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
     <title>Limit Edge - Email Management</title>
     <style>
         * {
@@ -2137,14 +2138,20 @@
                 console.log('🔄 Auto-saving new emails to database...');
                 
                 for (const email of emails) {
+                    // Check if email has valid data
+                    if (!email.messageId || !email.subject) {
+                        console.log('Skipping email with missing data:', email);
+                        continue;
+                    }
+                    
                     const emailData = {
-                        messageId: email.messageId,
-                        subject: email.subject,
-                        from: email.from,
-                        date: email.date,
-                        snippet: email.snippet,
-                        body: email.body,
-                        parsedData: email.parsedData,
+                        messageId: email.messageId || '',
+                        subject: email.subject || '',
+                        from: email.from || '',
+                        date: email.date || '',
+                        snippet: email.snippet || '',
+                        body: email.body || '',
+                        parsedData: email.parsedData || {},
                         savedAt: new Date().toISOString()
                     };
                     
@@ -2175,15 +2182,20 @@
                 console.log('💾 Saving emails to database...');
                 
                 for (const email of emails) {
-                    // Check if email already exists
+                    // Check if email already exists and has valid data
+                    if (!email.messageId || !email.subject) {
+                        console.log('Skipping email with missing data:', email);
+                        continue;
+                    }
+                    
                     const emailData = {
-                        messageId: email.messageId,
-                        subject: email.subject,
-                        from: email.from,
-                        date: email.date,
-                        snippet: email.snippet,
-                        body: email.body,
-                        parsedData: email.parsedData,
+                        messageId: email.messageId || '',
+                        subject: email.subject || '',
+                        from: email.from || '',
+                        date: email.date || '',
+                        snippet: email.snippet || '',
+                        body: email.body || '',
+                        parsedData: email.parsedData || {},
                         savedAt: new Date().toISOString()
                     };
                     
@@ -3455,6 +3467,11 @@ ${email.snippet}
 
         function showLoading() {
             document.getElementById('emailsContainer').innerHTML = '<div class="loading"><p id="loadingText">Fetching emails...</p></div>';
+        }
+
+        function hideLoading() {
+            // Loading will be hidden when emails are displayed
+            console.log('Loading hidden');
         }
 
         // Filter Functions
