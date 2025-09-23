@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin">
     <title>Limit Edge - Email Management</title>
     <style>
         * {
@@ -559,6 +558,267 @@
             border: 2px solid rgba(255, 255, 255, 0.3);
         }
 
+        /* Status Badge in Card Header */
+        .card-status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .status-preapprove {
+            background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+            color: #2e7d32;
+            border: 1px solid rgba(46, 125, 50, 0.3);
+        }
+
+        .status-approve {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: #1976d2;
+            border: 1px solid rgba(25, 118, 210, 0.3);
+        }
+
+        .status-reject {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            color: #d32f2f;
+            border: 1px solid rgba(211, 47, 47, 0.3);
+        }
+
+        /* Status Management Section */
+        .status-management-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 16px;
+            padding: 24px;
+            margin: 20px 0;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .status-management-section h3 {
+            margin: 0 0 20px 0;
+            color: #495057;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .status-management {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+
+        .status-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .status-action-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .status-action-btn:active {
+            transform: translateY(0);
+        }
+
+        .status-action-btn.processing {
+            cursor: not-allowed;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .status-action-btn.processing::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+
+        .status-action-btn.success {
+            animation: successPulse 0.6s ease-out;
+        }
+
+        .status-action-btn.error {
+            animation: errorShake 0.6s ease-out;
+        }
+
+        .preapprove-btn {
+            background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+            color: #2e7d32;
+            border: 2px solid rgba(46, 125, 50, 0.3);
+        }
+
+        .preapprove-btn:hover {
+            background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+            border-color: #2e7d32;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+        }
+
+        .approve-btn {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: #1976d2;
+            border: 2px solid rgba(25, 118, 210, 0.3);
+        }
+
+        .approve-btn:hover {
+            background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%);
+            border-color: #1976d2;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+        }
+
+        .reject-btn {
+            background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+            color: #d32f2f;
+            border: 2px solid rgba(211, 47, 47, 0.3);
+        }
+
+        .reject-btn:hover {
+            background: linear-gradient(135deg, #ffcdd2 0%, #ef9a9a 100%);
+            border-color: #d32f2f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+        }
+
+        .status-notes-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .status-notes-section label {
+            font-weight: 600;
+            color: #495057;
+            font-size: 14px;
+        }
+
+        .status-notes-section textarea {
+            padding: 12px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 80px;
+            transition: border-color 0.3s ease;
+        }
+
+        .status-notes-section textarea:focus {
+            outline: none;
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+        }
+
+        .save-notes-btn {
+            align-self: flex-start;
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .save-notes-btn:hover {
+            background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+        }
+
+        .save-notes-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 1px 4px rgba(0, 123, 255, 0.2);
+        }
+
+        .save-notes-btn.saving {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .save-notes-btn.saving::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+
+        .save-notes-btn.success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            animation: successPulse 0.6s ease-out;
+        }
+
+        .save-notes-btn.error {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            animation: errorShake 0.6s ease-out;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        @keyframes successPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes errorShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Responsive adjustments for status management */
+        @media (max-width: 768px) {
+            .status-management-section {
+                padding: 16px;
+                margin: 16px 0;
+            }
+
+            .status-actions {
+                flex-direction: column;
+            }
+
+            .status-action-btn {
+                min-width: auto;
+            }
+        }
+
         .status-badge {
             padding: 6px 14px;
             border-radius: 24px;
@@ -652,6 +912,109 @@
             font-weight: 500;
         }
 
+        .category-selection {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            padding: 8px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 10;
+            justify-content: center;
+        }
+
+        /* Single button state */
+        .category-selection:has(.category-option.active) {
+            justify-content: center;
+        }
+
+        .category-selection:has(.category-option.active) .category-option {
+            flex: none;
+            min-width: 120px;
+        }
+
+        .category-option {
+            flex: 1;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            position: relative;
+            z-index: 11;
+        }
+
+        .europe-option {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            color: #1976d2;
+            border: 1px solid rgba(25, 118, 210, 0.3);
+        }
+
+        .europe-option:hover {
+            background: linear-gradient(135deg, #bbdefb 0%, #90caf9 100%);
+            border-color: #1976d2;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(25, 118, 210, 0.2);
+        }
+
+        .non-europe-option {
+            background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+            color: #388e3c;
+            border: 1px solid rgba(56, 142, 60, 0.3);
+        }
+
+        .non-europe-option:hover {
+            background: linear-gradient(135deg, #c8e6c9 0%, #a5d6a7 100%);
+            border-color: #388e3c;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 8px rgba(56, 142, 60, 0.2);
+        }
+
+        .category-option:active {
+            transform: translateY(0);
+        }
+
+        /* Active state for selected category */
+        .category-option.active {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .category-option.active:hover {
+            transform: none;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .category-option:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .category-selection {
+                flex-direction: column;
+                gap: 6px;
+            }
+            
+            .category-option {
+                font-size: 11px;
+                padding: 6px 10px;
+            }
+
+        }
 
         /* Professional Application Details View */
         .application-details-view {
@@ -694,6 +1057,113 @@
             gap: 24px;
             position: relative;
             z-index: 1;
+        }
+
+        .details-header-right {
+            display: flex;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+
+        .current-status-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-left: 16px;
+        }
+
+        .current-status-label {
+            font-size: 14px;
+            font-weight: 600;
+            opacity: 0.9;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .current-status-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .current-status-value.status-preapprove {
+            background: rgba(46, 125, 50, 0.8);
+            color: white;
+        }
+
+        .current-status-value.status-approve {
+            background: rgba(25, 118, 210, 0.8);
+            color: white;
+        }
+
+        .current-status-value.status-reject {
+            background: rgba(211, 47, 47, 0.8);
+            color: white;
+        }
+
+        /* Received Date Section */
+        .received-date-section {
+            margin-top: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .received-date-container {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 12px;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .received-date-icon {
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+            border-radius: 50%;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+        }
+
+        .received-date-content {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .received-date-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #6c757d;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .received-date-time {
+            font-size: 16px;
+            font-weight: 700;
+            color: #495057;
+            line-height: 1.4;
         }
 
         .details-avatar {
@@ -1439,6 +1909,18 @@
                 padding: 32px 24px;
             }
 
+            .details-header-right {
+                align-self: center;
+            }
+
+
+            .current-status-info {
+                align-items: center;
+                padding: 12px 16px;
+                margin-left: 0;
+                margin-top: 12px;
+            }
+
             .personal-info-section {
                 padding: 32px 0;
             }
@@ -1871,24 +2353,28 @@
             <!-- Controls -->
             <div id="controlsSection" class="controls hidden">
                 <div class="btn-group">
-                    <button id="refreshBtn" class="btn">🔄 Refresh</button>
-                    <button id="saveToDbBtn" class="btn" style="background: #28a745;">💾 Save to Database</button>
-                    <button id="loadFromDbBtn" class="btn" style="background: #17a2b8;">📥 Load from Database</button>
-                    <button id="checkDbBtn" class="btn" style="background: #6c757d;">🔍 Check Database</button>
-                    <button id="testDbBtn" class="btn" style="background: #ffc107; color: #000;">🧪 Test Database</button>
+                    <button id="checkNewBtn" class="btn">🔍 Check New Emails</button>
+                    <button id="showAllBtn" class="btn">📋 Show All Applications</button>
                 </div>
                 <input type="text" id="searchBox" class="search-box" placeholder="Search emails...">
             </div>
 
             <!-- Filter Buttons -->
-            <div id="filterSection" class="filter-buttons hidden">
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="male">Male</button>
-                <button class="filter-btn" data-filter="female">Female</button>
-                <button class="filter-btn" data-filter="age-18-25">18-25 years</button>
-                <button class="filter-btn" data-filter="age-26-35">26-35 years</button>
-                <button class="filter-btn" data-filter="age-36+">36+ years</button>
-            </div>
+                <div id="filterSection" class="filter-buttons hidden">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="male">Male</button>
+                    <button class="filter-btn" data-filter="female">Female</button>
+                    <button class="filter-btn" data-filter="age-18-25">18-25 years</button>
+                    <button class="filter-btn" data-filter="age-26-35">26-35 years</button>
+                    <button class="filter-btn" data-filter="age-36+">36+ years</button>
+                    <button class="filter-btn" data-filter="in-europe">🇪🇺 In Europe</button>
+                    <button class="filter-btn" data-filter="non-european">🌍 Non-European</button>
+                    
+                    <!-- Status Filters -->
+                    <button class="filter-btn" data-filter="preapprove">✅ Pre-approve</button>
+                    <button class="filter-btn" data-filter="approve">🎯 Approve</button>
+                    <button class="filter-btn" data-filter="reject">❌ Reject</button>
+                </div>
 
             <!-- Messages -->
             <div id="messageContainer"></div>
@@ -1909,6 +2395,7 @@
                     ← Back to Applications
                 </button>
             </div>
+
             <div class="details-header">
                 <div class="details-header-left">
                     <div class="details-avatar" id="appAvatar">👤</div>
@@ -1918,6 +2405,12 @@
                             <span class="details-gender" id="appGender">👤</span>
                             <span class="details-age" id="appAge">Age</span>
                         </div>
+                    </div>
+                </div>
+                <div class="details-header-right">
+                    <div class="current-status-info">
+                        <span class="current-status-label">📊 Current Status</span>
+                        <span class="current-status-value" id="currentStatus">Not Set</span>
                     </div>
                 </div>
             </div>
@@ -1982,6 +2475,41 @@
                     </div>
                 </div>
 
+
+                <!-- Status Management Section -->
+                <div class="status-management-section">
+                    <h3>📊 Status Management</h3>
+                    <div class="status-management">
+                        <div class="status-actions">
+                            <button class="status-action-btn preapprove-btn" onclick="setEmailStatusFromDetails('Pre-approve')">
+                                ✅ Pre-approve
+                            </button>
+                            <button class="status-action-btn approve-btn" onclick="setEmailStatusFromDetails('Approve')">
+                                🎯 Approve
+                            </button>
+                            <button class="status-action-btn reject-btn" onclick="setEmailStatusFromDetails('Reject')">
+                                ❌ Reject
+                            </button>
+                        </div>
+                        <div class="status-notes-section">
+                            <label for="statusNotes">📝 Notes:</label>
+                            <textarea id="statusNotes" placeholder="Add notes about this application..." rows="3"></textarea>
+                            <button class="save-notes-btn" onclick="saveStatusNotes()">Save Notes</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Received Date Section -->
+                <div class="received-date-section">
+                    <div class="received-date-container">
+                        <span class="received-date-icon">📅</span>
+                        <div class="received-date-content">
+                            <span class="received-date-title">Received Date</span>
+                            <span class="received-date-time" id="appReceivedDate">Not available</span>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -1994,7 +2522,7 @@
     <script type="module">
         // Import the functions you need from the SDKs you need
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         
         // Your web app's Firebase configuration
         const firebaseConfig = {
@@ -2019,6 +2547,10 @@
         window.query = query;
         window.orderBy = orderBy;
         window.limit = limit;
+        window.updateDoc = updateDoc;
+        window.doc = doc;
+        
+        // Firebase is ready - loadEmailsFromDatabase will be called from window.onload
     </script>
     <script src="config.js"></script>
 
@@ -2125,128 +2657,16 @@
         }
 
         // Database Functions
-        async function autoSaveNewEmails() {
+        async function loadEmailsFromDatabase() {
             if (!window.db) {
                 console.log('❌ Firebase not initialized');
                 return;
             }
 
-            if (emails.length === 0) {
-                console.log('❌ No emails to save');
-                return;
-            }
-
-            try {
-                console.log('🔄 Auto-saving new emails to database...');
-                console.log('📧 Emails to save:', emails.length);
-                
-                let savedCount = 0;
-                
-                for (const email of emails) {
-                    console.log('📧 Processing email:', email.messageId, email.subject);
-                    
-                    // Check if email has valid data
-                    if (!email.messageId || !email.subject) {
-                        console.log('⚠️ Skipping email with missing data:', email);
-                        continue;
-                    }
-                    
-                    const emailData = {
-                        messageId: email.messageId || '',
-                        subject: email.subject || '',
-                        from: email.from || '',
-                        date: email.date || '',
-                        snippet: email.snippet || '',
-                        body: email.body || '',
-                        parsedData: email.parsedData || {},
-                        savedAt: new Date().toISOString()
-                    };
-                    
-                    console.log('💾 Saving email data:', emailData);
-                    
-                    const docRef = await window.addDoc(window.collection(window.db, 'emails'), emailData);
-                    console.log('✅ Email saved with ID:', docRef.id);
-                    savedCount++;
-                }
-                
-                console.log(`✅ Auto-saved ${savedCount} emails to database`);
-                
-            } catch (error) {
-                console.error('❌ Error auto-saving emails:', error);
-                console.error('Error details:', error.message);
-            }
-        }
-
-        async function saveEmailsToDatabase() {
-            if (!window.db) {
-                showError('Firebase not initialized. Please refresh the page.');
-                return;
-            }
-
-            if (emails.length === 0) {
-                showError('No emails to save. Please fetch emails first.');
-                return;
-            }
-
-            showLoading();
-            
-            try {
-                console.log('💾 Saving emails to database...');
-                console.log('📧 Emails to save:', emails.length);
-                
-                let savedCount = 0;
-                
-                for (const email of emails) {
-                    console.log('📧 Processing email:', email.messageId, email.subject);
-                    
-                    // Check if email already exists and has valid data
-                    if (!email.messageId || !email.subject) {
-                        console.log('⚠️ Skipping email with missing data:', email);
-                        continue;
-                    }
-                    
-                    const emailData = {
-                        messageId: email.messageId || '',
-                        subject: email.subject || '',
-                        from: email.from || '',
-                        date: email.date || '',
-                        snippet: email.snippet || '',
-                        body: email.body || '',
-                        parsedData: email.parsedData || {},
-                        savedAt: new Date().toISOString()
-                    };
-                    
-                    console.log('💾 Saving email data:', emailData);
-                    
-                    const docRef = await window.addDoc(window.collection(window.db, 'emails'), emailData);
-                    console.log('✅ Email saved with ID:', docRef.id);
-                    savedCount++;
-                }
-                
-                showMessage(`${savedCount} emails saved to database successfully!`, 'success');
-                console.log(`✅ ${savedCount} emails saved to database`);
-                
-            } catch (error) {
-                console.error('❌ Error saving emails to database:', error);
-                console.error('Error details:', error.message);
-                showError(`Error saving emails: ${error.message}`);
-            } finally {
-                hideLoading();
-            }
-        }
-
-        async function loadEmailsFromDatabase() {
-            if (!window.db) {
-                showError('Firebase not initialized. Please refresh the page.');
-                return;
-            }
-
-            showLoading();
-            
             try {
                 console.log('📥 Loading emails from database...');
                 
-                // Try to load all emails without ordering first
+                // Check Firebase connection
                 const emailsRef = window.collection(window.db, 'emails');
                 const querySnapshot = await window.getDocs(emailsRef);
                 
@@ -2262,10 +2682,27 @@
                         messageId: data.messageId || doc.id,
                         subject: data.subject || 'No Subject',
                         from: data.from || 'Unknown',
-                        date: data.date || new Date().toISOString(),
+                        date: data.date ? (data.date instanceof Date ? data.date.toISOString() : 
+                            (data.date.toDate ? data.date.toDate().toISOString() : data.date.toString())) : '',
                         snippet: data.snippet || '',
                         body: data.body || '',
                         parsedData: data.parsedData || {},
+                        // Use direct fields if available, otherwise fallback to parsedData
+                        name: data.name || data.parsedData?.name || '',
+                        age: data.age || data.parsedData?.age || '',
+                        gender: data.gender || data.parsedData?.gender || '',
+                        height: data.height || data.parsedData?.height || '',
+                        weight: data.weight || data.parsedData?.weight || '',
+                        hometown: data.hometown || data.parsedData?.hometown || '',
+                        athleticBackground: data.athleticBackground || data.parsedData?.athleticBackground || '',
+                        motivation: data.motivation || data.parsedData?.motivation || '',
+                        socialMedia: data.socialMedia || data.parsedData?.socialMedia || '',
+                        // Extract social media accounts
+                        instagram: data.instagram || data.parsedData?.instagram || '',
+                        youtube: data.youtube || data.parsedData?.youtube || '',
+                        category: data.category || '',
+                        status: data.status || '',
+                        statusNotes: data.statusNotes || '',
                         id: doc.id
                     });
                 });
@@ -2278,227 +2715,130 @@
                 updateEmailCount();
                 
                 if (emails.length === 0) {
-                    showMessage('No emails found in database. Try fetching emails first.', 'warning');
+                    console.log('📭 No emails found in database');
+                    showMessage('📭 هیچ ایمیلی در دیتابیس یافت نشد', 'info');
                 } else {
-                    showMessage(`${emails.length} emails loaded from database!`, 'success');
-                }
+                console.log(`✅ ${emails.length} emails loaded from database`);
                 
-                console.log('✅ Emails loaded from database');
+                // Sort emails by date (newest first)
+                emails.sort((a, b) => {
+                    try {
+                        let dateA, dateB;
+                        
+                        // Handle different date formats
+                        if (a.date instanceof Date) {
+                            dateA = a.date;
+                        } else if (typeof a.date === 'string') {
+                            dateA = new Date(a.date);
+                        } else if (a.date && a.date.toDate) {
+                            dateA = a.date.toDate();
+                        } else {
+                            dateA = new Date(0); // Fallback to epoch
+                        }
+                        
+                        if (b.date instanceof Date) {
+                            dateB = b.date;
+                        } else if (typeof b.date === 'string') {
+                            dateB = new Date(b.date);
+                        } else if (b.date && b.date.toDate) {
+                            dateB = b.date.toDate();
+                        } else {
+                            dateB = new Date(0); // Fallback to epoch
+                        }
+                        
+                        // Sort in descending order (newest first)
+                        return dateB.getTime() - dateA.getTime();
+                    } catch (error) {
+                        console.error('❌ Error sorting emails by date:', error);
+                        return 0; // Keep original order if sorting fails
+                    }
+                });
+                
+                console.log('📅 Emails sorted by date (newest first)');
+                showMessage(`✅ ${emails.length} ایمیل از دیتابیس بارگذاری شد`, 'success');
+                }
                 
             } catch (error) {
                 console.error('❌ Error loading emails from database:', error);
-                showError(`Error loading emails: ${error.message}`);
-            } finally {
-                hideLoading();
+                
+                // Check if it's a connection error
+                if (error.message.includes('Could not reach Cloud Firestore backend') || 
+                    error.message.includes('Failed to fetch') ||
+                    error.message.includes('Network error')) {
+                    showError('🌐 مشکل اتصال به اینترنت - در حال کار در حالت آفلاین');
+                } else {
+                    showError(`خطا در بارگذاری از دیتابیس: ${error.message}`);
+                }
             }
         }
 
-        async function checkDatabase() {
+        async function autoSaveNewEmails() {
             if (!window.db) {
-                showError('Firebase not initialized. Please refresh the page.');
+                console.log('❌ Firebase not initialized');
+                return;
+            }
+
+            if (emails.length === 0) {
+                console.log('❌ No emails to save');
                 return;
             }
 
             try {
-                console.log('🔍 Checking database status...');
-                console.log('🗄️ Database instance:', window.db);
+                console.log('🔄 Auto-saving emails to database...');
+                console.log('📧 Emails to save:', emails.length);
                 
-                // Try different collection names
-                const collectionNames = ['emails', 'email', 'applications', 'limit-edge-emails'];
+                let savedCount = 0;
                 
-                for (const collectionName of collectionNames) {
-                    try {
-                        console.log(`🔍 Checking collection: ${collectionName}`);
-                        const emailsRef = window.collection(window.db, collectionName);
-                        const querySnapshot = await window.getDocs(emailsRef);
-                        
-                        console.log(`📊 Collection "${collectionName}": ${querySnapshot.size} documents found`);
-                        
-                        if (querySnapshot.size > 0) {
-                            showMessage(`Found ${querySnapshot.size} emails in collection "${collectionName}"`, 'success');
-                            
-                            // Show first few emails as preview
-                            const previewEmails = [];
-                            querySnapshot.forEach((doc) => {
-                                if (previewEmails.length < 3) {
-                                    const data = doc.data();
-                                    previewEmails.push({
-                                        id: doc.id,
-                                        subject: data.subject || 'No Subject',
-                                        from: data.from || 'Unknown',
-                                        savedAt: data.savedAt || 'Unknown'
-                                    });
-                                }
-                            });
-                            
-                            console.log('📧 Preview emails:', previewEmails);
-                            return;
-                        }
-                    } catch (error) {
-                        console.log(`❌ Error checking collection "${collectionName}":`, error.message);
-                    }
+                for (const email of emails) {
+                    console.log('📧 Processing email:', email.id, email.subject);
+                    
+                    // Use id as messageId if messageId is missing
+                    const messageId = email.messageId || email.id;
+                    
+                    const emailData = {
+                        messageId: messageId,
+                        subject: email.subject || '',
+                        from: email.from || '',
+                        date: email.date || '',
+                        snippet: email.snippet || '',
+                        body: email.body || '',
+                        parsedData: email.parsedData || {},
+                        // Save direct fields for easier access
+                        name: email.name || '',
+                        age: email.age || '',
+                        gender: email.gender || '',
+                        height: email.height || '',
+                        weight: email.weight || '',
+                        hometown: email.hometown || '',
+                        athleticBackground: email.athleticBackground || '',
+                        motivation: email.motivation || '',
+                        socialMedia: email.socialMedia || '',
+                        // Extract social media accounts
+                        instagram: email.instagram || '',
+                        youtube: email.youtube || '',
+                        category: email.category || '',
+                        status: email.status || '',
+                        statusNotes: email.statusNotes || '',
+                        savedAt: new Date().toISOString()
+                    };
+                    
+                    console.log('💾 Saving email data:', emailData);
+                    
+                    const docRef = await window.addDoc(window.collection(window.db, 'emails'), emailData);
+                    console.log('✅ Email saved with ID:', docRef.id);
+                    savedCount++;
                 }
                 
-                showMessage('No emails found in any collection. Database is empty.', 'warning');
+                console.log(`✅ Auto-saved ${savedCount} emails to database`);
+                // Don't show message here - will be shown in fetchEmails
                 
             } catch (error) {
-                console.error('❌ Error checking database:', error);
-                showError(`Error checking database: ${error.message}`);
+                console.error('❌ Error auto-saving emails:', error);
+                console.error('Error details:', error.message);
+                showError(`خطا در ذخیره: ${error.message}`);
             }
         }
 
-        async function testDatabase() {
-            if (!window.db) {
-                showError('Firebase not initialized. Please refresh the page.');
-                return;
-            }
-
-            try {
-                console.log('🧪 Testing database connection...');
-                
-                // Test saving a simple document
-                const testData = {
-                    test: true,
-                    message: 'Test document',
-                    timestamp: new Date().toISOString()
-                };
-                
-                console.log('💾 Saving test document...');
-                const docRef = await window.addDoc(window.collection(window.db, 'test'), testData);
-                console.log('✅ Test document saved with ID:', docRef.id);
-                
-                // Test reading the document
-                console.log('📖 Reading test document...');
-                const testRef = window.collection(window.db, 'test');
-                const testSnapshot = await window.getDocs(testRef);
-                
-                console.log('📊 Test collection contains:', testSnapshot.size, 'documents');
-                
-                testSnapshot.forEach((doc) => {
-                    console.log('📧 Test document:', doc.id, doc.data());
-                });
-                
-                showMessage('Database test successful!', 'success');
-                
-            } catch (error) {
-                console.error('❌ Database test failed:', error);
-                showError(`Database test failed: ${error.message}`);
-            }
-        }
-
-        // Email Functions
-        async function fetchEmails() {
-            if (!accessToken) {
-                showError('ابتدا با Google وارد شوید');
-                return;
-            }
-
-            showLoading();
-            
-            try {
-                console.log('🔍 Starting to fetch emails...');
-                
-                // Search for emails with "Application:" in subject
-                const query = 'subject:"Application:" -subject:"New application received" -subject:"EmailJS" -from:"noreply@emailjs.com"';
-                console.log('🔍 Search with query:', query);
-                
-                // Fetch all emails using pagination
-                let allMessages = [];
-                let nextPageToken = null;
-                let pageCount = 0;
-                const maxPages = 20; // Limit to prevent infinite loops
-                
-                do {
-                    pageCount++;
-                    console.log(`📄 Fetching page ${pageCount}...`);
-                    
-                    let url = `https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${encodeURIComponent(query)}&maxResults=100`;
-                    if (nextPageToken) {
-                        url += `&pageToken=${nextPageToken}`;
-                    }
-                    
-                    const response = await fetch(url, {
-                        headers: {
-                            'Authorization': `Bearer ${accessToken}`,
-                            'Content-Type': 'application/json'
-                        }
-                    });
-
-                    console.log('📡 پاسخ Gmail API:', response.status);
-
-                    if (!response.ok) {
-                        const errorData = await response.json();
-                        console.error('❌ خطای Gmail API:', errorData);
-                        throw new Error(`HTTP ${response.status}: ${errorData.error?.message || 'خطای نامشخص'}`);
-                    }
-
-                    const data = await response.json();
-                    console.log(`📧 صفحه ${pageCount} - Data received:`, data);
-
-                    if (data.messages && data.messages.length > 0) {
-                        allMessages = allMessages.concat(data.messages);
-                    }
-
-                    nextPageToken = data.nextPageToken;
-                    
-                    // Show progress
-                    document.getElementById('loadingText').textContent = `در حال دریافت ایمیل‌ها... (${allMessages.length} ایمیل یافت شد)`;
-                    
-                } while (nextPageToken && pageCount < maxPages);
-
-                console.log(`📧 کل ایمیل‌های یافت شده: ${allMessages.length}`);
-
-                if (allMessages.length === 0) {
-                    showMessage('No emails found', 'info');
-                    clearEmailsContainer();
-                    return;
-                }
-
-                // Update header with total count
-                updateEmailCount(allMessages.length);
-
-                // Fetch detailed email data
-                emails = [];
-                for (let i = 0; i < allMessages.length; i++) {
-                    const message = allMessages[i];
-                    try {
-                        // Show progress
-                        document.getElementById('loadingText').textContent = `در حال پردازش ایمیل‌ها... (${i + 1}/${allMessages.length})`;
-                        
-                        const emailDetail = await fetchEmailDetail(message.id);
-                        if (emailDetail) {
-                            emails.push(emailDetail);
-                        }
-                    } catch (error) {
-                        console.error('Error fetching email details:', error);
-                    }
-                }
-
-                // Filter for emails with "Application:" in subject
-                const applicationEmails = emails.filter(email => 
-                    email.subject.includes('Application:') &&
-                    !email.subject.includes('New application received') &&
-                    !email.subject.includes('EmailJS') &&
-                    !email.from.includes('noreply@emailjs.com')
-                );
-                
-                console.log(`✅ ${emails.length} emails received, ${applicationEmails.length} emails with Application:`);
-                
-                emails = applicationEmails; // Update emails array
-                filteredEmails = [...emails];
-                displayEmails();
-                updateEmailCount();
-                
-                // Auto-save new emails to database
-                await autoSaveNewEmails();
-                
-                showMessage(`${emails.length} emails with Application: successfully received`, 'success');
-
-            } catch (error) {
-                console.error('❌ Error fetching emails:', error);
-                showError(`Error fetching emails: ${error.message}`);
-            }
-        }
 
         async function fetchEmailDetail(messageId) {
             try {
@@ -2574,10 +2914,12 @@
                 
                 return {
                     id: messageId,
+                    messageId: messageId,
                     subject: subject,
                     from: from,
                     date: new Date(date),
                     snippet: emailContent,
+                    body: emailContent,
                     status: 'new',
                     ...applicationData
                 };
@@ -2760,10 +3102,11 @@
                         <div class="application-card" onclick="openApplicationPage('${email.id}')">
                             <div class="card-header">
                                 <div class="applicant-info">
-                                    <h3 class="applicant-name">${email.name}</h3>
+                                    <h3 class="applicant-name">${email.name || 'Unknown'}</h3>
+                                    ${email.status ? `<span class="card-status-badge status-${email.status.toLowerCase().replace('-', '')}">${getStatusIcon(email.status)} ${email.status}</span>` : ''}
                                 </div>
                                 <div class="card-status">
-                                    <span class="gender-icon">${email.gender === 'male' ? '👨' : email.gender === 'female' ? '👩' : '👤'}</span>
+                                    <span class="gender-icon">${(email.gender || '') === 'male' ? '👨' : (email.gender || '') === 'female' ? '👩' : '👤'}</span>
                                 </div>
                             </div>
                             
@@ -2772,12 +3115,12 @@
                                     <div class="info-item">
                                         <span class="info-icon">⚧</span>
                                         <span class="info-label">Gender</span>
-                                        <span class="info-value">${email.gender}</span>
+                                        <span class="info-value">${email.gender || 'Unknown'}</span>
                                     </div>
                                     <div class="info-item">
                                         <span class="info-icon">🎂</span>
                                         <span class="info-label">Age</span>
-                                        <span class="info-value">${email.age}</span>
+                                        <span class="info-value">${email.age || 'Unknown'}</span>
                                     </div>
                                 </div>
                                 
@@ -2785,12 +3128,12 @@
                                     <div class="info-item">
                                         <span class="info-icon">⚖️</span>
                                         <span class="info-label">Weight</span>
-                                        <span class="info-value">${email.weight}</span>
+                                        <span class="info-value">${email.weight || 'Unknown'}</span>
                                     </div>
                                     <div class="info-item">
                                         <span class="info-icon">📏</span>
                                         <span class="info-label">Height</span>
-                                        <span class="info-value">${email.height}</span>
+                                        <span class="info-value">${email.height || 'Unknown'}</span>
                                     </div>
                                 </div>
                                 
@@ -2798,14 +3141,34 @@
                                     <div class="info-item full-width">
                                         <span class="info-icon">🏠</span>
                                         <span class="info-label">Hometown</span>
-                                        <span class="info-value">${email.hometown}</span>
+                                        <span class="info-value">${email.hometown || 'Unknown'}</span>
                                     </div>
                                 </div>
                                 
                                 <div class="athletic-preview">
                                     <span class="info-icon">🏃</span>
-                                    <span class="preview-text">${email.athleticBackground.substring(0, 80)}${email.athleticBackground.length > 80 ? '...' : ''}</span>
+                                    <span class="preview-text">${(email.athleticBackground || '').substring(0, 80)}${(email.athleticBackground || '').length > 80 ? '...' : ''}</span>
                                 </div>
+                                
+                                <!-- Category Selection -->
+                                <div class="category-selection" onclick="event.stopPropagation()">
+                                    ${email.category === 'In Europe' ? 
+                                        `<button class="category-option europe-option active" disabled title="Currently In Europe">
+                                            🇪🇺 In Europe
+                                        </button>` :
+                                        email.category === 'Non-European' ?
+                                        `<button class="category-option non-europe-option active" disabled title="Currently Non-European">
+                                            🌍 Non-European
+                                        </button>` :
+                                        `<button class="category-option europe-option" onclick="event.stopPropagation(); setEmailCategory('${email.id}', 'In Europe')" title="Mark as In Europe">
+                                            🇪🇺 In Europe
+                                        </button>
+                                        <button class="category-option non-europe-option" onclick="event.stopPropagation(); setEmailCategory('${email.id}', 'Non-European')" title="Mark as Non-European">
+                                            🌍 Non-European
+                                        </button>`
+                                    }
+                                </div>
+
                             </div>
                             
                         </div>
@@ -2843,14 +3206,28 @@ ${email.snippet}
             }
         }
 
-        function openApplicationPage(emailId) {
+        async function openApplicationPage(emailId) {
             console.log('🔍 Opening application page for ID:', emailId);
             console.log('🔍 Available emails:', emails);
+            
+            // If emails array is empty, try to load from database
+            if (emails.length === 0) {
+                console.log('📭 Emails array is empty, loading from database...');
+                try {
+                    await loadEmailsFromDatabase(false);
+                    console.log('✅ Emails loaded from database:', emails.length);
+                } catch (error) {
+                    console.error('❌ Error loading emails from database:', error);
+                    showError('خطا در بارگذاری ایمیل‌ها از دیتابیس');
+                    return;
+                }
+            }
             
             const email = emails.find(e => e.id === emailId);
             if (!email) {
                 console.error('❌ Email not found:', emailId);
                 console.error('❌ Available email IDs:', emails.map(e => e.id));
+                showError('ایمیل یافت نشد. لطفاً صفحه را refresh کنید.');
                 return;
             }
 
@@ -2866,6 +3243,13 @@ ${email.snippet}
             // Hide main header
             document.querySelector('.header').style.display = 'none';
             
+            // Store current email ID for status management
+            window.currentEmailId = emailId;
+            
+            // Update status management section
+            updateCurrentStatusDisplay(email.status);
+            document.getElementById('statusNotes').value = email.statusNotes || '';
+            
             // Populate application details
             document.getElementById('appName').textContent = email.name || 'Unknown';
             document.getElementById('appGender').textContent = email.gender === 'male' ? 'Male' : email.gender === 'female' ? 'Female' : 'Unknown';
@@ -2877,6 +3261,14 @@ ${email.snippet}
             document.getElementById('appMotivation').textContent = email.motivation || 'Unknown';
             document.getElementById('appInstagram').textContent = email.instagram !== 'نامشخص' ? email.instagram : 'Not provided';
             document.getElementById('appYoutube').textContent = email.youtube !== 'نامشخص' ? email.youtube : 'Not provided';
+            
+            // Set email information
+            console.log('📧 Email date info:', {
+                date: email.date,
+                dateType: typeof email.date,
+                dateString: String(email.date)
+            });
+            document.getElementById('appReceivedDate').textContent = formatReceivedDate(email.date);
             
             // Set avatar with gender icon
             document.getElementById('appAvatar').textContent = email.gender === 'male' ? '👨' : email.gender === 'female' ? '👩' : '👤';
@@ -3585,11 +3977,11 @@ ${email.snippet}
         }
 
         function clearEmailsContainer() {
-            document.getElementById('emailsContainer').innerHTML = '<div class="loading"><p id="loadingText">Loading...</p></div>';
+            document.getElementById('emailsContainer').innerHTML = '<div class="loading"><p id="loadingText">در حال بارگذاری...</p></div>';
         }
 
         function showLoading() {
-            document.getElementById('emailsContainer').innerHTML = '<div class="loading"><p id="loadingText">Fetching emails...</p></div>';
+            document.getElementById('emailsContainer').innerHTML = '<div class="loading"><p id="loadingText">در حال دریافت ایمیل‌های جدید...</p></div>';
         }
 
         function hideLoading() {
@@ -3597,37 +3989,80 @@ ${email.snippet}
             console.log('Loading hidden');
         }
 
+        // Multi-filter state
+        let activeFilters = new Set();
+
         // Filter Functions
         function filterEmails(filter) {
-            // Update active filter button
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.querySelector(`[data-filter="${filter}"]`).classList.add('active');
-
-            // Filter emails
-            switch (filter) {
-                case 'all':
-                    filteredEmails = [...emails];
-                    break;
-                case 'male':
-                    filteredEmails = emails.filter(email => email.gender === 'male');
-                    break;
-                case 'female':
-                    filteredEmails = emails.filter(email => email.gender === 'female');
-                    break;
-                case 'age-18-25':
-                    filteredEmails = emails.filter(email => email.age >= 18 && email.age <= 25);
-                    break;
-                case 'age-26-35':
-                    filteredEmails = emails.filter(email => email.age >= 26 && email.age <= 35);
-                    break;
-                case 'age-36+':
-                    filteredEmails = emails.filter(email => email.age >= 36);
-                    break;
+            console.log('🔍 Filtering emails by:', filter);
+            
+            // Toggle filter in active filters set
+            if (filter === 'all') {
+                activeFilters.clear();
+            } else {
+                if (activeFilters.has(filter)) {
+                    activeFilters.delete(filter);
+                } else {
+                    activeFilters.add(filter);
+                }
             }
+            
+            // Update filter button states
+            updateFilterButtonStates();
+            
+            // Apply all active filters
+            applyFilters();
+        }
 
+        // Apply all active filters
+        function applyFilters() {
+            if (activeFilters.size === 0) {
+                filteredEmails = [...emails];
+            } else {
+                filteredEmails = emails.filter(email => {
+                    return Array.from(activeFilters).every(filter => {
+                        switch (filter) {
+                            case 'male':
+                                return email.gender === 'male';
+                            case 'female':
+                                return email.gender === 'female';
+                            case 'age-18-25':
+                                return email.age >= 18 && email.age <= 25;
+                            case 'age-26-35':
+                                return email.age >= 26 && email.age <= 35;
+                            case 'age-36+':
+                                return email.age >= 36;
+                            case 'in-europe':
+                                return email.category === 'In Europe';
+                            case 'non-european':
+                                return email.category === 'Non-European';
+                            case 'preapprove':
+                                return email.status === 'Pre-approve';
+                            case 'approve':
+                                return email.status === 'Approve';
+                            case 'reject':
+                                return email.status === 'Reject';
+                            default:
+                                return true;
+                        }
+                    });
+                });
+            }
+            
+            console.log(`📊 Applied ${activeFilters.size} filters, showing ${filteredEmails.length} emails`);
             displayEmails();
+        }
+
+        // Update filter button states
+        function updateFilterButtonStates() {
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                const filter = btn.dataset.filter;
+                if (filter === 'all') {
+                    btn.classList.toggle('active', activeFilters.size === 0);
+                } else {
+                    btn.classList.toggle('active', activeFilters.has(filter));
+                }
+            });
         }
 
         // Search Function
@@ -3635,11 +4070,39 @@ ${email.snippet}
             const searchTerm = document.getElementById('searchBox').value.toLowerCase();
             
             if (!searchTerm) {
-                filterEmails(document.querySelector('.filter-btn.active').dataset.filter);
+                // If no search term, apply current filters
+                applyFilters();
                 return;
             }
 
-            filteredEmails = emails.filter(email => 
+            // Apply search on top of current filters
+            let baseEmails = emails;
+            if (activeFilters.size > 0) {
+                baseEmails = emails.filter(email => {
+                    return Array.from(activeFilters).every(filter => {
+                        switch (filter) {
+                            case 'male':
+                                return email.gender === 'male';
+                            case 'female':
+                                return email.gender === 'female';
+                            case 'age-18-25':
+                                return email.age >= 18 && email.age <= 25;
+                            case 'age-26-35':
+                                return email.age >= 26 && email.age <= 35;
+                            case 'age-36+':
+                                return email.age >= 36;
+                            case 'in-europe':
+                                return email.category === 'In Europe';
+                            case 'non-european':
+                                return email.category === 'Non-European';
+                            default:
+                                return true;
+                        }
+                    });
+                });
+            }
+
+            filteredEmails = baseEmails.filter(email => 
                 email.name.toLowerCase().includes(searchTerm) ||
                 email.hometown.toLowerCase().includes(searchTerm) ||
                 email.athleticBackground.toLowerCase().includes(searchTerm) ||
@@ -3647,11 +4110,13 @@ ${email.snippet}
                 email.socialMedia.toLowerCase().includes(searchTerm) ||
                 email.instagram.toLowerCase().includes(searchTerm) ||
                 email.youtube.toLowerCase().includes(searchTerm) ||
+                email.category.toLowerCase().includes(searchTerm) ||
                 email.subject.toLowerCase().includes(searchTerm) ||
                 email.from.toLowerCase().includes(searchTerm) ||
                 email.snippet.toLowerCase().includes(searchTerm)
             );
 
+            console.log(`🔍 Search "${searchTerm}" with ${activeFilters.size} filters: ${filteredEmails.length} results`);
             displayEmails();
         }
 
@@ -3677,15 +4142,531 @@ ${email.snippet}
             showMessage(message, 'error');
         }
 
+        // Check New Emails Function (only checks for new emails, doesn't load from database)
+        async function checkNewEmails() {
+            if (!accessToken) {
+                showError('ابتدا با Google وارد شوید');
+                return;
+            }
+
+            showLoading();
+            
+            try {
+                console.log('🔍 Checking for NEW emails from Gmail...');
+                
+                // Get existing emails from database to check for duplicates
+                const emailsRef = window.collection(window.db, 'emails');
+                const existingSnapshot = await window.getDocs(emailsRef);
+                
+                const existingMessageIds = new Set();
+                existingSnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    if (data.messageId) {
+                        existingMessageIds.add(data.messageId);
+                    }
+                });
+                
+                console.log(`📊 Found ${existingMessageIds.size} existing emails in database`);
+                
+                // Search for emails with "Application:" in subject
+                const query = 'subject:"Application:" -subject:"New application received" -subject:"EmailJS" -from:"noreply@emailjs.com"';
+                console.log('🔍 Search with query:', query);
+                
+                // Fetch all emails using pagination
+                let allMessages = [];
+                let nextPageToken = null;
+                let pageCount = 0;
+                const maxPages = 20; // Limit to prevent infinite loops
+                
+                do {
+                    pageCount++;
+                    console.log(`📄 Fetching page ${pageCount}...`);
+                    
+                    let url = `https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${encodeURIComponent(query)}&maxResults=100`;
+                    if (nextPageToken) {
+                        url += `&pageToken=${nextPageToken}`;
+                    }
+                    
+                    const response = await fetch(url, {
+                        headers: {
+                            'Authorization': `Bearer ${accessToken}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    console.log('📡 پاسخ Gmail API:', response.status);
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        console.error('❌ خطای Gmail API:', errorData);
+                        throw new Error(`HTTP ${response.status}: ${errorData.error?.message || 'خطای نامشخص'}`);
+                    }
+
+                    const data = await response.json();
+                    console.log(`📧 صفحه ${pageCount} - Data received:`, data);
+
+                    if (data.messages && data.messages.length > 0) {
+                        allMessages = allMessages.concat(data.messages);
+                    }
+                    nextPageToken = data.nextPageToken;
+                    
+                    // Show progress
+                    const loadingText = document.getElementById('loadingText');
+                    if (loadingText) {
+                        loadingText.textContent = `در حال بررسی ایمیل‌های جدید... (${allMessages.length} ایمیل یافت شد)`;
+                    }
+                    
+                } while (nextPageToken && pageCount < maxPages);
+
+                // Filter for NEW emails only (not in database)
+                const newMessages = allMessages.filter(message => !existingMessageIds.has(message.id));
+                console.log(`📧 کل ایمیل‌های یافت شده: ${allMessages.length}, ایمیل‌های جدید: ${newMessages.length}`);
+
+                if (newMessages.length === 0) {
+                    showMessage('📭 هیچ ایمیل جدیدی یافت نشد', 'info');
+                    hideLoading();
+                    return;
+                }
+
+                // Fetch detailed email data for NEW emails only
+                const newEmails = [];
+                for (let i = 0; i < newMessages.length; i++) {
+                    const message = newMessages[i];
+                    try {
+                        // Show progress
+                        const loadingText = document.getElementById('loadingText');
+                        if (loadingText) {
+                            loadingText.textContent = `در حال پردازش ایمیل‌های جدید... (${i + 1}/${newMessages.length})`;
+                        }
+                        
+                        const emailDetail = await fetchEmailDetail(message.id);
+                        if (emailDetail) {
+                            newEmails.push(emailDetail);
+                        }
+                    } catch (error) {
+                        console.error('Error fetching email details:', error);
+                    }
+                }
+
+                // Filter for emails with "Application:" in subject
+                const applicationEmails = newEmails.filter(email => 
+                    email.subject.includes('Application:') &&
+                    !email.subject.includes('New application received') &&
+                    !email.subject.includes('EmailJS') &&
+                    !email.from.includes('noreply@emailjs.com')
+                );
+                
+                console.log(`✅ ${newEmails.length} new emails received, ${applicationEmails.length} new emails with Application:`);
+                
+                // Save new emails to database
+                if (applicationEmails.length > 0) {
+                    emails = applicationEmails; // Set emails to new emails for saving
+                    await autoSaveNewEmails();
+                    
+                    // Reload all emails from database to display (already sorted)
+                    await loadEmailsFromDatabase(false);
+                    
+                    showMessage(`🆕 ${applicationEmails.length} ایمیل جدید دریافت و ذخیره شد`, 'success');
+                } else {
+                    showMessage('📭 هیچ ایمیل جدیدی یافت نشد', 'info');
+                }
+
+            } catch (error) {
+                console.error('❌ Error checking new emails:', error);
+                showError(`Error checking new emails: ${error.message}`);
+            } finally {
+                hideLoading();
+            }
+        }
+
+        // Get Status Icon Function
+        function getStatusIcon(status) {
+            switch (status) {
+                case 'Pre-approve':
+                    return '✅';
+                case 'Approve':
+                    return '🎯';
+                case 'Reject':
+                    return '❌';
+                default:
+                    return '📋';
+            }
+        }
+
+        // Set Email Status Function
+        async function setEmailStatus(emailId, status) {
+            console.log('📊 Setting status for email:', emailId, 'to:', status);
+            
+            try {
+                // Update local email data
+                const email = emails.find(e => e.id === emailId);
+                if (email) {
+                    // Check if already has this status
+                    if (email.status === status) {
+                        console.log('ℹ️ Email already has this status:', status);
+                        showMessage(`این ایمیل قبلاً در وضعیت ${status} قرار دارد`, 'info');
+                        return;
+                    }
+                    
+                    email.status = status;
+                    console.log('✅ Status updated locally:', email.status);
+                    
+                    // Update filtered emails as well
+                    const filteredEmail = filteredEmails.find(e => e.id === emailId);
+                    if (filteredEmail) {
+                        filteredEmail.status = status;
+                    }
+                    
+                    // Update database
+                    if (window.db) {
+                        const emailsRef = window.collection(window.db, 'emails');
+                        const querySnapshot = await window.getDocs(emailsRef);
+                        
+                        for (const docSnapshot of querySnapshot.docs) {
+                            const data = docSnapshot.data();
+                            if (data.messageId === email.messageId || docSnapshot.id === emailId) {
+                                const docRef = window.doc(window.db, 'emails', docSnapshot.id);
+                                await window.updateDoc(docRef, {
+                                    status: status,
+                                    updatedAt: new Date().toISOString()
+                                });
+                                console.log('✅ Status updated in database:', docSnapshot.id);
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // Refresh display
+                    displayEmails();
+                    
+                    // Show success message
+                    showMessage(`✅ وضعیت به ${status} تغییر یافت`, 'success');
+                } else {
+                    console.error('❌ Email not found:', emailId);
+                    throw new Error('ایمیل یافت نشد');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error setting status:', error);
+                throw error; // Re-throw the error for the calling function
+            }
+        }
+
+        // Set Email Status from Details Page
+        async function setEmailStatusFromDetails(status) {
+            const currentEmailId = window.currentEmailId;
+            if (!currentEmailId) {
+                showError('ایمیل فعلی یافت نشد');
+                return;
+            }
+            
+            // Find the clicked button
+            const clickedBtn = event.target;
+            const originalText = clickedBtn.textContent;
+            
+            // Show processing animation
+            clickedBtn.textContent = '⏳ Processing...';
+            clickedBtn.classList.add('processing');
+            
+            try {
+                await setEmailStatus(currentEmailId, status);
+                
+                // Show success animation
+                clickedBtn.classList.remove('processing');
+                clickedBtn.classList.add('success');
+                clickedBtn.textContent = '✅ Done!';
+                
+                // Update the current status display
+                updateCurrentStatusDisplay(status);
+                
+                // Reset button after 2 seconds
+                setTimeout(() => {
+                    clickedBtn.classList.remove('success');
+                    clickedBtn.textContent = originalText;
+                }, 2000);
+                
+            } catch (error) {
+                // Show error animation
+                clickedBtn.classList.remove('processing');
+                clickedBtn.classList.add('error');
+                clickedBtn.textContent = '❌ Error';
+                
+                // Reset button after 2 seconds
+                setTimeout(() => {
+                    clickedBtn.classList.remove('error');
+                    clickedBtn.textContent = originalText;
+                }, 2000);
+            }
+        }
+
+        // Update Current Status Display
+        function updateCurrentStatusDisplay(status) {
+            const statusElement = document.getElementById('currentStatus');
+            if (statusElement) {
+                statusElement.textContent = status || 'Not Set';
+                statusElement.className = 'current-status-value';
+                
+                // Add status-specific styling
+                if (status) {
+                    const statusClass = `status-${status.toLowerCase().replace('-', '')}`;
+                    statusElement.classList.add(statusClass);
+                }
+            }
+        }
+
+        // Save Status Notes
+        async function saveStatusNotes() {
+            const currentEmailId = window.currentEmailId;
+            const notes = document.getElementById('statusNotes').value;
+            const saveBtn = document.querySelector('.save-notes-btn');
+            
+            console.log('💾 Saving status notes:', { currentEmailId, notes });
+            
+            if (!currentEmailId) {
+                showError('ایمیل فعلی یافت نشد');
+                return;
+            }
+            
+            if (!notes.trim()) {
+                showMessage('⚠️ لطفاً یادداشتی وارد کنید', 'warning');
+                return;
+            }
+            
+            // Show saving animation
+            saveBtn.textContent = '💾 Saving...';
+            saveBtn.classList.add('saving');
+            
+            try {
+                // Update local email data
+                const email = emails.find(e => e.id === currentEmailId);
+                if (email) {
+                    console.log('📧 Found email:', email.name);
+                    email.statusNotes = notes;
+                    
+                    // Update filtered emails as well
+                    const filteredEmail = filteredEmails.find(e => e.id === currentEmailId);
+                    if (filteredEmail) {
+                        filteredEmail.statusNotes = notes;
+                    }
+                    
+                    // Update database
+                    if (window.db) {
+                        console.log('🗄️ Updating database...');
+                        const emailsRef = window.collection(window.db, 'emails');
+                        const querySnapshot = await window.getDocs(emailsRef);
+                        
+                        let found = false;
+                        for (const docSnapshot of querySnapshot.docs) {
+                            const data = docSnapshot.data();
+                            if (data.messageId === email.messageId || docSnapshot.id === currentEmailId) {
+                                const docRef = window.doc(window.db, 'emails', docSnapshot.id);
+                                await window.updateDoc(docRef, {
+                                    statusNotes: notes,
+                                    updatedAt: new Date().toISOString()
+                                });
+                                console.log('✅ Status notes updated in database:', docSnapshot.id);
+                                found = true;
+                                break;
+                            }
+                        }
+                        
+                        if (!found) {
+                            console.error('❌ Document not found in database');
+                            showError('سند در دیتابیس یافت نشد');
+                            saveBtn.classList.remove('saving');
+                            saveBtn.classList.add('error');
+                            saveBtn.textContent = '❌ Error';
+                            setTimeout(() => {
+                                saveBtn.classList.remove('error');
+                                saveBtn.textContent = 'Save Notes';
+                            }, 2000);
+                            return;
+                        }
+                    } else {
+                        console.error('❌ Database not available');
+                        showError('دیتابیس در دسترس نیست');
+                        saveBtn.classList.remove('saving');
+                        saveBtn.classList.add('error');
+                        saveBtn.textContent = '❌ Error';
+                        setTimeout(() => {
+                            saveBtn.classList.remove('error');
+                            saveBtn.textContent = 'Save Notes';
+                        }, 2000);
+                        return;
+                    }
+                    
+                    // Show success animation
+                    saveBtn.classList.remove('saving');
+                    saveBtn.classList.add('success');
+                    saveBtn.textContent = '✅ Saved!';
+                    showMessage('✅ یادداشت‌ها ذخیره شد', 'success');
+                    
+                    // Reset button after 2 seconds
+                    setTimeout(() => {
+                        saveBtn.classList.remove('success');
+                        saveBtn.textContent = 'Save Notes';
+                    }, 2000);
+                    
+                } else {
+                    console.error('❌ Email not found in local array');
+                    showError('ایمیل یافت نشد');
+                    saveBtn.classList.remove('saving');
+                    saveBtn.classList.add('error');
+                    saveBtn.textContent = '❌ Error';
+                    setTimeout(() => {
+                        saveBtn.classList.remove('error');
+                        saveBtn.textContent = 'Save Notes';
+                    }, 2000);
+                }
+                
+            } catch (error) {
+                console.error('❌ Error saving status notes:', error);
+                showError(`خطا در ذخیره یادداشت‌ها: ${error.message}`);
+                saveBtn.classList.remove('saving');
+                saveBtn.classList.add('error');
+                saveBtn.textContent = '❌ Error';
+                setTimeout(() => {
+                    saveBtn.classList.remove('error');
+                    saveBtn.textContent = 'Save Notes';
+                }, 2000);
+            }
+        }
+
+        // Set Email Category Function
+        async function setEmailCategory(emailId, category) {
+            console.log('🏷️ Setting category for email:', emailId, 'to:', category);
+            
+            try {
+                // Update local email data
+                const email = emails.find(e => e.id === emailId);
+                if (email) {
+                    // Check if already has this category
+                    if (email.category === category) {
+                        console.log('ℹ️ Email already has this category:', category);
+                        showMessage(`این ایمیل قبلاً در دسته ${category} قرار دارد`, 'info');
+                        return;
+                    }
+                    
+                    email.category = category;
+                    console.log('✅ Category updated locally:', email.category);
+                    
+                    // Update filtered emails as well
+                    const filteredEmail = filteredEmails.find(e => e.id === emailId);
+                    if (filteredEmail) {
+                        filteredEmail.category = category;
+                    }
+                    
+                    // Update database
+                    if (window.db) {
+                        const emailsRef = window.collection(window.db, 'emails');
+                        const querySnapshot = await window.getDocs(emailsRef);
+                        
+                        for (const docSnapshot of querySnapshot.docs) {
+                            const data = docSnapshot.data();
+                            if (data.messageId === email.messageId || docSnapshot.id === emailId) {
+                                const docRef = window.doc(window.db, 'emails', docSnapshot.id);
+                                await window.updateDoc(docRef, {
+                                    category: category,
+                                    updatedAt: new Date().toISOString()
+                                });
+                                console.log('✅ Category updated in database:', docSnapshot.id);
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // Refresh display
+                    displayEmails();
+                    
+                    // Show success message
+                    showMessage(`✅ دسته‌بندی به ${category} تغییر یافت`, 'success');
+                } else {
+                    console.error('❌ Email not found:', emailId);
+                    showError('ایمیل یافت نشد');
+                }
+                
+            } catch (error) {
+                console.error('❌ Error setting category:', error);
+                showError(`خطا در تغییر دسته‌بندی: ${error.message}`);
+            }
+        }
+
+        // Format Received Date for Details Page
+        function formatReceivedDate(dateValue) {
+            if (!dateValue || dateValue === '' || dateValue === 'Unknown') {
+                return 'Not available';
+            }
+            
+            try {
+                console.log('📅 Formatting date:', dateValue, 'Type:', typeof dateValue);
+                
+                let date;
+                
+                // Handle different date formats
+                if (dateValue instanceof Date) {
+                    date = dateValue;
+                } else if (typeof dateValue === 'string') {
+                    // Try to parse the date string
+                    date = new Date(dateValue);
+                } else if (typeof dateValue === 'object' && dateValue.seconds) {
+                    // Handle Firestore timestamp
+                    date = new Date(dateValue.seconds * 1000);
+                    console.log('📅 Firestore timestamp detected:', dateValue);
+                } else if (typeof dateValue === 'object' && dateValue.toDate) {
+                    // Handle Firestore Timestamp object
+                    date = dateValue.toDate();
+                    console.log('📅 Firestore Timestamp object detected:', dateValue);
+                } else {
+                    console.error('❌ Invalid date type:', typeof dateValue);
+                    return 'Invalid date format';
+                }
+                
+                // Check if date is valid
+                if (isNaN(date.getTime())) {
+                    console.error('❌ Invalid date:', dateValue);
+                    return 'Invalid date';
+                }
+                
+                const options = {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    timeZoneName: 'short'
+                };
+                
+                const formattedDate = date.toLocaleDateString('en-US', options);
+                console.log('✅ Formatted date:', formattedDate);
+                return formattedDate;
+                
+            } catch (error) {
+                console.error('❌ Error formatting received date:', error);
+                console.error('❌ Date value:', dateValue);
+                return 'Date formatting error';
+            }
+        }
+
+        // Show All Applications Function
+        function showAllApplications() {
+            console.log('📋 Showing all applications...');
+            
+            // Reset search box
+            document.getElementById('searchBox').value = '';
+            
+            // Reset filter to 'all'
+            filterEmails('all');
+            
+            // Show message
+            showMessage(`📋 نمایش ${emails.length} درخواست`, 'info');
+        }
+
         // Event Listeners
         document.getElementById('signInBtn').addEventListener('click', signIn);
         document.getElementById('signOutBtn').addEventListener('click', signOut);
-        document.getElementById('refreshBtn').addEventListener('click', fetchEmails);
+        document.getElementById('checkNewBtn').addEventListener('click', checkNewEmails);
+        document.getElementById('showAllBtn').addEventListener('click', showAllApplications);
         document.getElementById('searchBox').addEventListener('input', searchEmails);
-        document.getElementById('saveToDbBtn').addEventListener('click', saveEmailsToDatabase);
-        document.getElementById('loadFromDbBtn').addEventListener('click', loadEmailsFromDatabase);
-        document.getElementById('checkDbBtn').addEventListener('click', checkDatabase);
-        document.getElementById('testDbBtn').addEventListener('click', testDatabase);
 
         // Filter button event listeners
         document.querySelectorAll('.filter-btn').forEach(btn => {
@@ -3983,6 +4964,35 @@ ${email.snippet}
             // Initialize Google APIs
             initializeGapi();
             initializeGis();
+            
+            // Load emails from database after Firebase is ready
+            setTimeout(async () => {
+                if (window.db) {
+                    console.log('✅ Firebase is ready, loading emails...');
+                    try {
+                        await loadEmailsFromDatabase(true);
+                        console.log('✅ Emails loaded successfully on page load');
+                    } catch (error) {
+                        console.error('❌ Error loading emails on page load:', error);
+                    }
+                } else {
+                    console.log('⏳ Firebase not ready yet, waiting...');
+                    // Try again after another delay
+                    setTimeout(async () => {
+                        if (window.db) {
+                            console.log('✅ Firebase is ready on retry, loading emails...');
+                            try {
+                                await loadEmailsFromDatabase(true);
+                                console.log('✅ Emails loaded successfully on retry');
+                            } catch (error) {
+                                console.error('❌ Error loading emails on retry:', error);
+                            }
+                        } else {
+                            console.log('❌ Firebase still not ready');
+                        }
+                    }, 2000);
+                }
+            }, 1500);
         };
     </script>
 </body>

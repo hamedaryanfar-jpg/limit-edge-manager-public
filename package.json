@@ -1,0 +1,15 @@
+{
+  "name": "limitedge",
+  "version": "1.0.0",
+  "description": "A professional email management system for Limit Edge applications.",
+  "main": "config.example.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "firebase": "^12.3.0"
+  }
+}
