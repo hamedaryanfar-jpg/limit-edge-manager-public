@@ -1874,6 +1874,7 @@
                     <button id="refreshBtn" class="btn">🔄 Refresh</button>
                     <button id="saveToDbBtn" class="btn" style="background: #28a745;">💾 Save to Database</button>
                     <button id="loadFromDbBtn" class="btn" style="background: #17a2b8;">📥 Load from Database</button>
+                    <button id="checkDbBtn" class="btn" style="background: #6c757d;">🔍 Check Database</button>
                 </div>
                 <input type="text" id="searchBox" class="search-box" placeholder="Search emails...">
             </div>
@@ -2224,35 +2225,43 @@
             try {
                 console.log('📥 Loading emails from database...');
                 
-                const q = window.query(
-                    window.collection(window.db, 'emails'),
-                    window.orderBy('savedAt', 'desc'),
-                    window.limit(100)
-                );
+                // Try to load all emails without ordering first
+                const emailsRef = window.collection(window.db, 'emails');
+                const querySnapshot = await window.getDocs(emailsRef);
                 
-                const querySnapshot = await window.getDocs(q);
+                console.log('📊 Database query result:', querySnapshot.size, 'documents found');
+                
                 const dbEmails = [];
                 
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
+                    console.log('📧 Email document:', doc.id, data);
+                    
                     dbEmails.push({
-                        messageId: data.messageId,
-                        subject: data.subject,
-                        from: data.from,
-                        date: data.date,
-                        snippet: data.snippet,
-                        body: data.body,
-                        parsedData: data.parsedData,
+                        messageId: data.messageId || doc.id,
+                        subject: data.subject || 'No Subject',
+                        from: data.from || 'Unknown',
+                        date: data.date || new Date().toISOString(),
+                        snippet: data.snippet || '',
+                        body: data.body || '',
+                        parsedData: data.parsedData || {},
                         id: doc.id
                     });
                 });
+                
+                console.log('📋 Processed emails:', dbEmails.length);
                 
                 emails = dbEmails;
                 filteredEmails = [...emails];
                 displayEmails();
                 updateEmailCount();
                 
-                showMessage(`${emails.length} emails loaded from database!`, 'success');
+                if (emails.length === 0) {
+                    showMessage('No emails found in database. Try fetching emails first.', 'warning');
+                } else {
+                    showMessage(`${emails.length} emails loaded from database!`, 'success');
+                }
+                
                 console.log('✅ Emails loaded from database');
                 
             } catch (error) {
@@ -2260,6 +2269,48 @@
                 showError(`Error loading emails: ${error.message}`);
             } finally {
                 hideLoading();
+            }
+        }
+
+        async function checkDatabase() {
+            if (!window.db) {
+                showError('Firebase not initialized. Please refresh the page.');
+                return;
+            }
+
+            try {
+                console.log('🔍 Checking database status...');
+                
+                const emailsRef = window.collection(window.db, 'emails');
+                const querySnapshot = await window.getDocs(emailsRef);
+                
+                console.log('📊 Database check result:', querySnapshot.size, 'documents found');
+                
+                if (querySnapshot.size === 0) {
+                    showMessage('Database is empty. No emails found.', 'warning');
+                } else {
+                    showMessage(`Database contains ${querySnapshot.size} emails.`, 'success');
+                    
+                    // Show first few emails as preview
+                    const previewEmails = [];
+                    querySnapshot.forEach((doc) => {
+                        if (previewEmails.length < 3) {
+                            const data = doc.data();
+                            previewEmails.push({
+                                id: doc.id,
+                                subject: data.subject || 'No Subject',
+                                from: data.from || 'Unknown',
+                                savedAt: data.savedAt || 'Unknown'
+                            });
+                        }
+                    });
+                    
+                    console.log('📧 Preview emails:', previewEmails);
+                }
+                
+            } catch (error) {
+                console.error('❌ Error checking database:', error);
+                showError(`Error checking database: ${error.message}`);
             }
         }
 
@@ -3561,6 +3612,7 @@ ${email.snippet}
         document.getElementById('searchBox').addEventListener('input', searchEmails);
         document.getElementById('saveToDbBtn').addEventListener('click', saveEmailsToDatabase);
         document.getElementById('loadFromDbBtn').addEventListener('click', loadEmailsFromDatabase);
+        document.getElementById('checkDbBtn').addEventListener('click', checkDatabase);
 
         // Filter button event listeners
         document.querySelectorAll('.filter-btn').forEach(btn => {
